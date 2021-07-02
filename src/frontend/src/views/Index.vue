@@ -119,14 +119,13 @@
         </div>
 
         <div class="content__pizza">
-          <label class="input">
+          <BaseInput
+            v-model="name"
+            name="pizza_name"
+            placeholder="Введите название пиццы"
+          >
             <span class="visually-hidden">Название пиццы</span>
-            <input
-              type="text"
-              name="pizza_name"
-              placeholder="Введите название пиццы"
-            />
-          </label>
+          </BaseInput>
 
           <div class="content__constructor">
             <div class="pizza pizza--foundation--big-tomato">
@@ -153,12 +152,14 @@ import pizza from "@/static/pizza.json";
 import { getNameFromPath } from "@/common/helpers.js";
 
 import BaseButton from "@/common/components/BaseButton.vue";
+import BaseInput from "@/common/components/BaseInput.vue";
 
 export default {
   name: "IndexMain",
 
   components: {
     BaseButton,
+    BaseInput,
   },
 
   data() {
@@ -167,6 +168,7 @@ export default {
       ingredients: pizza.ingredients,
       sauces: pizza.sauces,
       sizes: pizza.sizes,
+      name: "",
     };
   },
 
