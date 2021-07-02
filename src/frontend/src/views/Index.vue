@@ -140,9 +140,7 @@
 
           <div class="content__result">
             <p>Итого: 0 ₽</p>
-            <button type="button" class="button button--disabled" disabled>
-              Готовьте!
-            </button>
+            <BaseButton disabled> Готовьте! </BaseButton>
           </div>
         </div>
       </div>
@@ -154,8 +152,14 @@
 import pizza from "@/static/pizza.json";
 import { getNameFromPath } from "@/common/helpers.js";
 
+import BaseButton from "@/common/components/BaseButton.vue";
+
 export default {
   name: "IndexMain",
+
+  components: {
+    BaseButton,
+  },
 
   data() {
     return {
