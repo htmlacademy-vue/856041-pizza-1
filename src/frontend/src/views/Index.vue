@@ -9,21 +9,20 @@
             <h2 class="title title--small sheet__title">Выберите тесто</h2>
 
             <div class="sheet__content dough">
-              <label
-                v-for="(el, index) in dough"
-                :key="index"
-                class="dough__input"
-                :class="` dough__input--${getDoughValue(el)}`"
+              <BaseRadioSelector
+                v-for="el in dough"
+                v-model="selectedDough"
+                :key="el.name"
+                :value="getDoughValue(el)"
               >
-                <input
-                  type="radio"
-                  name="dought"
-                  :value="getDoughValue(el)"
-                  class="visually-hidden"
-                />
-                <b>{{ el.name }}</b>
-                <span>{{ el.description }}</span>
-              </label>
+                <img :src="el.image" width="36" height="36" />
+                <div>
+                  <b class="dough-input__title">{{ el.name }}</b>
+                  <span class="dough-input__description">{{
+                    el.description
+                  }}</span>
+                </div>
+              </BaseRadioSelector>
             </div>
           </div>
         </div>
@@ -33,20 +32,18 @@
             <h2 class="title title--small sheet__title">Выберите размер</h2>
 
             <div class="sheet__content diameter">
-              <label
+              <BaseRadioSelector
                 v-for="size in sizes"
+                v-model="selectedSize"
                 :key="size.multiplier"
-                class="diameter__input"
-                :class="`diameter__input--${getSizesValue(size)}`"
+                :value="getSizesValue(size)"
               >
-                <input
-                  type="radio"
-                  name="diameter"
-                  :value="getSizesValue(size)"
-                  class="visually-hidden"
-                />
+                <div
+                  class="image-wrapper"
+                  :class="getDiameterImageClasses(getSizesValue(size))"
+                ></div>
                 <span>{{ size.name }}</span>
-              </label>
+              </BaseRadioSelector>
             </div>
           </div>
         </div>
@@ -134,6 +131,7 @@ import { getNameFromPath } from "@/common/helpers.js";
 import BaseButton from "@/common/components/BaseButton.vue";
 import BaseInput from "@/common/components/BaseInput.vue";
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
+import BaseRadioSelector from "@/common/components/BaseRadioSelector.vue";
 
 export default {
   name: "IndexMain",
@@ -142,6 +140,7 @@ export default {
     BaseButton,
     BaseInput,
     BaseItemCounter,
+    BaseRadioSelector,
   },
 
   data() {
@@ -152,6 +151,8 @@ export default {
       sizes: pizza.sizes,
       name: "",
       counter: 0,
+      selectedDough: "light",
+      selectedSize: "small",
     };
   },
 
@@ -179,8 +180,16 @@ export default {
           return "big";
       }
     },
+
     getNameFromPath(path) {
       return getNameFromPath(path);
+    },
+
+    getDiameterImageClasses(value) {
+      return [
+        "diameter-input__image-wrapper",
+        `diameter-input__image-wrapper--${value}`,
+      ];
     },
   },
 };

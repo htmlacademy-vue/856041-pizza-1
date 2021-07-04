@@ -1,66 +1,24 @@
-.diameter__input {
-  margin-right: 8.7%;
-  margin-bottom: 20px;
-  padding-top: 7px;
-  padding-bottom: 6px;
+.diameter-input {
+  &__image-wrapper {
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
 
-  cursor: pointer;
+    content: "";
+    transition: 0.3s;
 
-  span {
-    @include r-s16-h19;
+    border-radius: 50%;
+    background-color: $green-100;
+    background-image: url("~@/assets/img/diameter.svg");
+    background-repeat: no-repeat;
+    background-position: center;
 
-    position: relative;
-
-    padding-left: 46px;
-
-    &::before {
-      @include p_center_v;
-
-      width: 36px;
-      height: 36px;
-
-      content: "";
-      transition: 0.3s;
-
-      border-radius: 50%;
-      background-color: $green-100;
-      background-image: url("~@/assets/img/diameter.svg");
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-  }
-
-  &:nth-child(3n) {
-    margin-right: 0;
-  }
-
-  &--small {
-    span::before {
+    &--small {
       background-size: 18px;
     }
-  }
 
-  &--normal {
-    span::before {
+    &--normal {
       background-size: 29px;
-    }
-  }
-
-  &--big {
-    span::before {
-      background-size: 100%;
-    }
-  }
-
-  &:hover {
-    span::before {
-      box-shadow: $shadow-regular;
-    }
-  }
-
-  input {
-    &:checked + span::before {
-      box-shadow: $shadow-large;
     }
   }
 }
