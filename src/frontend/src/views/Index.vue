@@ -87,30 +87,10 @@
                       >{{ ingredient.name }}</span
                     >
 
-                    <div class="counter counter--orange ingridients__counter">
-                      <button
-                        type="button"
-                        class="
-                          counter__button
-                          counter__button--disabled
-                          counter__button--minus
-                        "
-                      >
-                        <span class="visually-hidden">Меньше</span>
-                      </button>
-                      <input
-                        type="text"
-                        name="counter"
-                        class="counter__input"
-                        value="0"
-                      />
-                      <button
-                        type="button"
-                        class="counter__button counter__button--plus"
-                      >
-                        <span class="visually-hidden">Больше</span>
-                      </button>
-                    </div>
+                    <base-item-counter
+                      v-model="counter"
+                      class="ingridients__counter"
+                    />
                   </li>
                 </ul>
               </div>
@@ -153,6 +133,7 @@ import { getNameFromPath } from "@/common/helpers.js";
 
 import BaseButton from "@/common/components/BaseButton.vue";
 import BaseInput from "@/common/components/BaseInput.vue";
+import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
 
 export default {
   name: "IndexMain",
@@ -160,6 +141,7 @@ export default {
   components: {
     BaseButton,
     BaseInput,
+    BaseItemCounter,
   },
 
   data() {
@@ -169,6 +151,7 @@ export default {
       sauces: pizza.sauces,
       sizes: pizza.sizes,
       name: "",
+      counter: 0,
     };
   },
 
