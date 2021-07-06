@@ -4,7 +4,7 @@
       <h2 class="title title--small sheet__title">Выберите размер</h2>
 
       <div class="sheet__content diameter">
-        <BaseRadioSelector
+        <base-radio-selector
           v-for="size in sizes"
           :key="size.multiplier"
           :modelValue="selectedSize"
@@ -16,7 +16,7 @@
             :class="getDiameterImageClasses(getSizesValue(size))"
           ></div>
           <span>{{ size.name }}</span>
-        </BaseRadioSelector>
+        </base-radio-selector>
       </div>
     </div>
   </div>

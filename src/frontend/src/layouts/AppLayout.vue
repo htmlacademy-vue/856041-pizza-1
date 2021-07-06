@@ -1,13 +1,13 @@
 <template>
   <div>
-    <AppLayoutHeader />
-    <IndexMain />
+    <app-layout-header />
+    <index-main />
   </div>
 </template>
 
 <script>
 import AppLayoutHeader from "./AppLayoutHeader.vue";
-import IndexMain from "../views/Index.vue";
+import IndexMain from "@/views/Index.vue";
 
 export default {
   name: "AppLayout",
