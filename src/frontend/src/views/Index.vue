@@ -10,26 +10,11 @@
           @selectDough="selectDough"
         />
 
-        <div class="content__diameter">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">Выберите размер</h2>
-
-            <div class="sheet__content diameter">
-              <BaseRadioSelector
-                v-for="size in sizes"
-                v-model="selectedSize"
-                :key="size.multiplier"
-                :value="getSizesValue(size)"
-              >
-                <div
-                  class="image-wrapper"
-                  :class="getDiameterImageClasses(getSizesValue(size))"
-                ></div>
-                <span>{{ size.name }}</span>
-              </BaseRadioSelector>
-            </div>
-          </div>
-        </div>
+        <builder-size-selector
+          :sizes="sizes"
+          :selectedSize="selectedSize"
+          @selectSize="selectSize"
+        />
 
         <div class="content__ingridients">
           <div class="sheet">
@@ -114,8 +99,8 @@ import { getNameFromPath } from "@/common/helpers.js";
 import BaseButton from "@/common/components/BaseButton.vue";
 import BaseInput from "@/common/components/BaseInput.vue";
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
-import BaseRadioSelector from "@/common/components/BaseRadioSelector.vue";
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector.vue";
+import BuilderSizeSelector from "../modules/builder/components/BuilderSizeSelector.vue";
 
 export default {
   name: "IndexMain",
@@ -124,8 +109,8 @@ export default {
     BaseButton,
     BaseInput,
     BaseItemCounter,
-    BaseRadioSelector,
     BuilderDoughSelector,
+    BuilderSizeSelector,
   },
 
   data() {
@@ -142,32 +127,16 @@ export default {
   },
 
   methods: {
-    getSizesValue({ name }) {
-      switch (name) {
-        case "23 см":
-          return "small";
-        case "32 см":
-          return "normal";
-        case "45 см":
-          return "big";
-        default:
-          return "big";
-      }
-    },
-
     getNameFromPath(path) {
       return getNameFromPath(path);
     },
 
-    getDiameterImageClasses(value) {
-      return [
-        "diameter-input__image-wrapper",
-        `diameter-input__image-wrapper--${value}`,
-      ];
-    },
-
     selectDough(val) {
       this.selectedDough = val;
+    },
+
+    selectSize(val) {
+      this.selectedSize = val;
     },
   },
 };
