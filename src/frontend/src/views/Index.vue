@@ -4,28 +4,11 @@
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
 
-        <div class="content__dough">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">Выберите тесто</h2>
-
-            <div class="sheet__content dough">
-              <BaseRadioSelector
-                v-for="el in dough"
-                v-model="selectedDough"
-                :key="el.name"
-                :value="getDoughValue(el)"
-              >
-                <img :src="el.image" width="36" height="36" />
-                <div>
-                  <b class="dough-input__title">{{ el.name }}</b>
-                  <span class="dough-input__description">{{
-                    el.description
-                  }}</span>
-                </div>
-              </BaseRadioSelector>
-            </div>
-          </div>
-        </div>
+        <builder-dough-selector
+          :doughs="dough"
+          :selectedDough="selectedDough"
+          @selectDough="selectDough"
+        />
 
         <div class="content__diameter">
           <div class="sheet">
@@ -132,6 +115,7 @@ import BaseButton from "@/common/components/BaseButton.vue";
 import BaseInput from "@/common/components/BaseInput.vue";
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
 import BaseRadioSelector from "@/common/components/BaseRadioSelector.vue";
+import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector.vue";
 
 export default {
   name: "IndexMain",
@@ -141,6 +125,7 @@ export default {
     BaseInput,
     BaseItemCounter,
     BaseRadioSelector,
+    BuilderDoughSelector,
   },
 
   data() {
@@ -157,17 +142,6 @@ export default {
   },
 
   methods: {
-    getDoughValue({ name }) {
-      switch (name) {
-        case "Тонкое":
-          return "light";
-        case "Толстое":
-          return "large";
-        default:
-          return "large";
-      }
-    },
-
     getSizesValue({ name }) {
       switch (name) {
         case "23 см":
@@ -190,6 +164,10 @@ export default {
         "diameter-input__image-wrapper",
         `diameter-input__image-wrapper--${value}`,
       ];
+    },
+
+    selectDough(val) {
+      this.selectedDough = val;
     },
   },
 };
