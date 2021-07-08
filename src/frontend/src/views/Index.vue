@@ -6,86 +6,35 @@
 
         <builder-dough-selector
           :doughs="dough"
-          :selectedDough="selectedDough"
+          :selectedDough="pizza.dough"
           @selectDough="selectDough"
         />
 
         <builder-size-selector
           :sizes="sizes"
-          :selectedSize="selectedSize"
+          :selectedSize="pizza.size"
           @selectSize="selectSize"
         />
 
-        <div class="content__ingridients">
-          <div class="sheet">
-            <h2 class="title title--small sheet__title">
-              Выберите ингридиенты
-            </h2>
-
-            <div class="sheet__content ingridients">
-              <div class="ingridients__sauce">
-                <p>Основной соус:</p>
-
-                <label
-                  v-for="sauce in sauces"
-                  :key="sauce.name"
-                  class="radio ingridients__input"
-                >
-                  <input type="radio" name="sauce" :value="sauce.name" />
-                  <span>{{ sauce.name }}</span>
-                </label>
-              </div>
-
-              <div class="ingridients__filling">
-                <p>Начинка:</p>
-
-                <ul class="ingridients__list">
-                  <li
-                    v-for="ingredient in ingredients"
-                    :key="ingredient.name"
-                    class="ingridients__item"
-                  >
-                    <span
-                      :class="`filling filling--${getNameFromPath(
-                        ingredient.image
-                      )}`"
-                      >{{ ingredient.name }}</span
-                    >
-
-                    <base-item-counter
-                      v-model="counter"
-                      class="ingridients__counter"
-                    />
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+        <builder-ingredients-selector
+          :sauces="sauces"
+          :ingredients="ingredients"
+          :selectedSauce="pizza.sauce"
+          :selectedIngredients="pizza.ingredients"
+          @selectSauce="selectSauce"
+          @selectIngredient="selectIngredients"
+        />
 
         <div class="content__pizza">
-          <BaseInput
-            v-model="name"
-            name="pizza_name"
-            placeholder="Введите название пиццы"
-          >
-            <span class="visually-hidden">Название пиццы</span>
-          </BaseInput>
+          <builder-name-input v-model="name"></builder-name-input>
 
-          <div class="content__constructor">
-            <div class="pizza pizza--foundation--big-tomato">
-              <div class="pizza__wrapper">
-                <div class="pizza__filling pizza__filling--ananas"></div>
-                <div class="pizza__filling pizza__filling--bacon"></div>
-                <div class="pizza__filling pizza__filling--cheddar"></div>
-              </div>
-            </div>
-          </div>
+          <builder-pizza-view
+            :pizza="pizza"
+            :ingredients="filledIngredients"
+            @addIngredient="addIngredient"
+          ></builder-pizza-view>
 
-          <div class="content__result">
-            <p>Итого: 0 ₽</p>
-            <BaseButton disabled> Готовьте! </BaseButton>
-          </div>
+          <builder-price-counter></builder-price-counter>
         </div>
       </div>
     </form>
@@ -94,49 +43,76 @@
 
 <script>
 import pizza from "@/static/pizza.json";
-import { getNameFromPath } from "@/common/helpers.js";
+import { prepareIngredients } from "@/common/helpers.js";
 
-import BaseButton from "@/common/components/BaseButton.vue";
-import BaseInput from "@/common/components/BaseInput.vue";
-import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector.vue";
-import BuilderSizeSelector from "../modules/builder/components/BuilderSizeSelector.vue";
+import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelector.vue";
+import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector.vue";
+import BuilderPizzaView from "@/modules/builder/components/BuilderPizzaView.vue";
+import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounter.vue";
+import BuilderNameInput from "@/modules/builder/components/BuilderNameInput.vue";
 
 export default {
   name: "IndexMain",
 
   components: {
-    BaseButton,
-    BaseInput,
-    BaseItemCounter,
     BuilderDoughSelector,
     BuilderSizeSelector,
+    BuilderIngredientsSelector,
+    BuilderPizzaView,
+    BuilderPriceCounter,
+    BuilderNameInput,
   },
 
   data() {
     return {
       dough: pizza.dough,
-      ingredients: pizza.ingredients,
+      ingredients: prepareIngredients(pizza.ingredients),
       sauces: pizza.sauces,
       sizes: pizza.sizes,
       name: "",
-      counter: 0,
-      selectedDough: "light",
-      selectedSize: "small",
+      pizza: {
+        dough: "small",
+        ingredients: [],
+        sauce: "creamy",
+        size: "",
+      },
     };
   },
 
-  methods: {
-    getNameFromPath(path) {
-      return getNameFromPath(path);
+  computed: {
+    filledIngredients() {
+      return this.ingredients.filter((el) => el.count > 0);
     },
+  },
 
+  methods: {
     selectDough(val) {
-      this.selectedDough = val;
+      this.pizza.dough = val;
     },
 
     selectSize(val) {
-      this.selectedSize = val;
+      this.pizza.size = val;
+    },
+
+    selectSauce(val) {
+      this.pizza.sauce = val;
+    },
+
+    selectIngredients(count, index) {
+      const ingredient = { ...this.ingredients[index], count };
+
+      this.ingredients.splice(index, 1, ingredient);
+      // TODO
+    },
+
+    addIngredient(ingredient) {
+      const index = this.ingredients.findIndex(
+        (el) => ingredient.name === el.name
+      );
+      const count = ingredient.count + 1;
+
+      this.selectIngredients(count, index);
     },
   },
 };

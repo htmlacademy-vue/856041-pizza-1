@@ -27,17 +27,22 @@
 
           <ul class="ingridients__list">
             <li
-              v-for="ingredient in ingredients"
+              v-for="(ingredient, index) in ingredients"
               :key="ingredient.name"
               class="ingridients__item"
             >
-              <span :class="`filling filling--${ingredient.value}`">{{
-                ingredient.name
-              }}</span>
+              <base-drag
+                :draggable="isDragAvailable(ingredient)"
+                :transfer-data="ingredient"
+              >
+                <span :class="`filling filling--${ingredient.value}`">{{
+                  ingredient.name
+                }}</span>
+              </base-drag>
 
               <base-item-counter
                 :value="ingredient.count"
-                @change="changeIngredientCount($event, ingredient)"
+                @change="$emit('selectIngredient', $event, index)"
                 class="ingridients__counter"
               />
             </li>
@@ -50,12 +55,16 @@
 
 <script>
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
+import BaseDrag from "@/common/components/BaseDrag.vue";
+
+import { MAX_INGREDIENTS_COUNT } from "@/common/constants.js";
 
 export default {
   name: "BuilderIngredientsSelector",
 
   components: {
     BaseItemCounter,
+    BaseDrag,
   },
 
   props: {
@@ -77,10 +86,6 @@ export default {
   },
 
   methods: {
-    changeIngredientCount(count, { value }) {
-      console.log(count, value);
-    },
-
     getSauceValue({ name }) {
       switch (name) {
         case "Томатный":
@@ -90,6 +95,10 @@ export default {
         default:
           return "tomato";
       }
+    },
+
+    isDragAvailable({ count }) {
+      return count < MAX_INGREDIENTS_COUNT;
     },
   },
 };

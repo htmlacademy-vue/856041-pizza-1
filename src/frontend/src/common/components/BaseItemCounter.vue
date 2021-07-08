@@ -45,7 +45,7 @@ export default {
 
     maxCount: {
       type: Number,
-      default: 100,
+      default: 3,
     },
   },
 };
