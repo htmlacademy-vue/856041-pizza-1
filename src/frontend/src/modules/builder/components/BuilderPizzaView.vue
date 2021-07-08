@@ -39,7 +39,11 @@ export default {
   computed: {
     getPizzaFoundationClasses() {
       const { sauce, dough } = this.pizza;
-      return ["pizza", `pizza--foundation--${dough}-${sauce}`];
+      if (sauce && dough) {
+        return ["pizza", `pizza--foundation--${dough.value}-${sauce.value}`];
+      } else {
+        return "pizza";
+      }
     },
   },
 

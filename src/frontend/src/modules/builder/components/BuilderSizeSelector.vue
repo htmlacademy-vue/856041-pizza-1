@@ -7,13 +7,13 @@
         <base-radio-selector
           v-for="size in sizes"
           :key="size.multiplier"
-          :modelValue="selectedSize"
-          :value="getSizesValue(size)"
-          @change="selectSize"
+          :modelValue="getModelValue"
+          :value="size.value"
+          @change="$emit('selectSize', size)"
         >
           <div
             class="image-wrapper"
-            :class="getDiameterImageClasses(getSizesValue(size))"
+            :class="getDiameterImageClasses(size.value)"
           ></div>
           <span>{{ size.name }}</span>
         </base-radio-selector>
@@ -39,34 +39,23 @@ export default {
     },
 
     selectedSize: {
-      type: String,
-      required: true,
+      type: Object,
+      default: () => {},
+    },
+  },
+
+  computed: {
+    getModelValue() {
+      return this.selectedSize && this.selectedSize.value;
     },
   },
 
   methods: {
-    getSizesValue({ name }) {
-      switch (name) {
-        case "23 см":
-          return "small";
-        case "32 см":
-          return "normal";
-        case "45 см":
-          return "big";
-        default:
-          return "big";
-      }
-    },
-
     getDiameterImageClasses(value) {
       return [
         "diameter-input__image-wrapper",
         `diameter-input__image-wrapper--${value}`,
       ];
-    },
-
-    selectSize(val) {
-      this.$emit("selectSize", val);
     },
   },
 };

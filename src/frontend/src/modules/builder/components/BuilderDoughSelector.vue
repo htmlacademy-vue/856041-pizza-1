@@ -6,10 +6,10 @@
       <div class="sheet__content dough">
         <base-radio-selector
           v-for="el in doughs"
-          :modelValue="selectedDough"
-          @change="selectDough"
+          :modelValue="getModelValue"
+          @change="$emit('selectDough', el)"
           :key="el.name"
-          :value="getDoughValue(el)"
+          :value="el.value"
         >
           <img :src="el.image" width="36" height="36" />
           <div>
@@ -39,25 +39,14 @@ export default {
     },
 
     selectedDough: {
-      type: String,
-      required: true,
+      type: Object,
+      default: () => {},
     },
   },
 
-  methods: {
-    getDoughValue({ name }) {
-      switch (name) {
-        case "Тонкое":
-          return "small";
-        case "Толстое":
-          return "big";
-        default:
-          return "big";
-      }
-    },
-
-    selectDough(val) {
-      this.$emit("selectDough", val);
+  computed: {
+    getModelValue() {
+      return this.selectedDough && this.selectedDough.value;
     },
   },
 };

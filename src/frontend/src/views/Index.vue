@@ -18,15 +18,14 @@
 
         <builder-ingredients-selector
           :sauces="sauces"
-          :ingredients="ingredients"
+          :ingredients="pizza.ingredients"
           :selectedSauce="pizza.sauce"
-          :selectedIngredients="pizza.ingredients"
           @selectSauce="selectSauce"
           @selectIngredient="selectIngredients"
         />
 
         <div class="content__pizza">
-          <builder-name-input v-model="name"></builder-name-input>
+          <builder-name-input v-model="pizza.name"></builder-name-input>
 
           <builder-pizza-view
             :pizza="pizza"
@@ -43,7 +42,12 @@
 
 <script>
 import pizza from "@/static/pizza.json";
-import { prepareIngredients } from "@/common/helpers.js";
+import {
+  prepareDoughs,
+  prepareIngredients,
+  prepareSauces,
+  prepareSizes,
+} from "@/common/helpers.js";
 
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector.vue";
 import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelector.vue";
@@ -66,24 +70,29 @@ export default {
 
   data() {
     return {
-      dough: pizza.dough,
-      ingredients: prepareIngredients(pizza.ingredients),
-      sauces: pizza.sauces,
-      sizes: pizza.sizes,
-      name: "",
+      dough: prepareDoughs(pizza.dough),
+      ingredients: pizza.ingredients,
+      sauces: prepareSauces(pizza.sauces),
+      sizes: prepareSizes(pizza.sizes),
+
       pizza: {
-        dough: "small",
+        dough: undefined,
         ingredients: [],
-        sauce: "creamy",
-        size: "",
+        name: "",
+        sauce: undefined,
+        size: undefined,
       },
     };
   },
 
   computed: {
     filledIngredients() {
-      return this.ingredients.filter((el) => el.count > 0);
+      return this.pizza.ingredients.filter((el) => el.count > 0);
     },
+  },
+
+  mounted() {
+    this.resetPizza();
   },
 
   methods: {
@@ -100,19 +109,26 @@ export default {
     },
 
     selectIngredients(count, index) {
-      const ingredient = { ...this.ingredients[index], count };
+      const ingredient = { ...this.pizza.ingredients[index], count };
 
-      this.ingredients.splice(index, 1, ingredient);
-      // TODO
+      this.pizza.ingredients.splice(index, 1, ingredient);
     },
 
     addIngredient(ingredient) {
-      const index = this.ingredients.findIndex(
+      const index = this.pizza.ingredients.findIndex(
         (el) => ingredient.name === el.name
       );
       const count = ingredient.count + 1;
 
       this.selectIngredients(count, index);
+    },
+
+    resetPizza() {
+      this.pizza.dough = this.dough[0];
+      this.pizza.sauce = this.sauces[0];
+      this.pizza.size = this.sizes[0];
+      this.pizza.name = "";
+      this.pizza.ingredients = prepareIngredients(this.ingredients);
     },
   },
 };

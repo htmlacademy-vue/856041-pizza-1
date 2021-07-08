@@ -15,8 +15,9 @@
             <input
               type="radio"
               name="sauce"
-              :value="getSauceValue(sauce)"
-              @change="$emit('selectSauce', $event.target.value)"
+              :value="sauce.value"
+              :checked="getModelValue(sauce)"
+              @change="$emit('selectSauce', sauce)"
             />
             <span>{{ sauce.name }}</span>
           </label>
@@ -77,6 +78,11 @@ export default {
       type: Array,
       required: true,
     },
+
+    selectedSauce: {
+      type: Object,
+      default: () => {},
+    },
   },
 
   data() {
@@ -86,19 +92,12 @@ export default {
   },
 
   methods: {
-    getSauceValue({ name }) {
-      switch (name) {
-        case "Томатный":
-          return "tomato";
-        case "Сливочный":
-          return "creamy";
-        default:
-          return "tomato";
-      }
-    },
-
     isDragAvailable({ count }) {
       return count < MAX_INGREDIENTS_COUNT;
+    },
+
+    getModelValue({ value }) {
+      return value === this.selectedSauce?.value;
     },
   },
 };
