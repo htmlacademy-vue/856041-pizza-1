@@ -1,0 +1,62 @@
+<template>
+  <div class="content__diameter">
+    <div class="sheet">
+      <h2 class="title title--small sheet__title">Выберите размер</h2>
+
+      <div class="sheet__content diameter">
+        <base-radio-selector
+          v-for="size in sizes"
+          :key="size.multiplier"
+          :modelValue="getModelValue"
+          :value="size.value"
+          @change="$emit('selectSize', size)"
+        >
+          <div
+            class="image-wrapper"
+            :class="getDiameterImageClasses(size.value)"
+          ></div>
+          <span>{{ size.name }}</span>
+        </base-radio-selector>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import BaseRadioSelector from "@/common/components/BaseRadioSelector.vue";
+
+export default {
+  name: "BuilderSizeSelector",
+
+  components: {
+    BaseRadioSelector,
+  },
+
+  props: {
+    sizes: {
+      type: Array,
+      required: true,
+    },
+
+    selectedSize: {
+      type: Object,
+      default: () => {},
+    },
+  },
+
+  computed: {
+    getModelValue() {
+      return this.selectedSize && this.selectedSize.value;
+    },
+  },
+
+  methods: {
+    getDiameterImageClasses(value) {
+      return [
+        "diameter-input__image-wrapper",
+        `diameter-input__image-wrapper--${value}`,
+      ];
+    },
+  },
+};
+</script>
