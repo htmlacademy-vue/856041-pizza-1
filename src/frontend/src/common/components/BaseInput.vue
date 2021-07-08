@@ -2,8 +2,7 @@
   <label class="input">
     <slot></slot>
     <input
-      type="text"
-      :name="name"
+      :type="text"
       :placeholder="placeholder"
       :required="required"
       :value="value"
@@ -13,6 +12,8 @@
 </template>
 
 <script>
+import { INPUT_TYPES } from "@/common/constants.js";
+
 export default {
   name: "BaseInput",
 
@@ -22,10 +23,10 @@ export default {
   },
 
   props: {
-    name: {
+    type: {
       type: String,
-      required: true,
-      validator: (v) => v.length,
+      default: "text",
+      validator: (v) => INPUT_TYPES.includes(v),
     },
 
     placeholder: {

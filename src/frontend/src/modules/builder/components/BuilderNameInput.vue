@@ -1,9 +1,5 @@
 <template>
-  <base-input
-    v-model="name"
-    name="pizza_name"
-    placeholder="Введите название пиццы"
-  >
+  <base-input v-model="name" placeholder="Введите название пиццы">
     <span class="visually-hidden">Название пиццы</span>
   </base-input>
 </template>
