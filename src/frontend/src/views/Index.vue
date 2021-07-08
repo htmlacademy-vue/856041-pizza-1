@@ -33,7 +33,10 @@
             @addIngredient="addIngredient"
           ></builder-pizza-view>
 
-          <builder-price-counter></builder-price-counter>
+          <builder-price-counter
+            :price="pizzaPrice"
+            :disabled="!isPizzaReady"
+          ></builder-price-counter>
         </div>
       </div>
     </form>
@@ -88,6 +91,28 @@ export default {
   computed: {
     filledIngredients() {
       return this.pizza.ingredients.filter((el) => el.count > 0);
+    },
+
+    pizzaPrice() {
+      const { pizza } = this;
+
+      if (!pizza.dough || !pizza.sauce || !pizza.size) return 0;
+
+      const ingredientsPrice = pizza.ingredients.reduce(
+        (sum, { price, count }) => {
+          return sum + price * count;
+        },
+        0
+      );
+
+      return (
+        (ingredientsPrice + pizza.dough.price + pizza.sauce.price) *
+        pizza.size.multiplier
+      );
+    },
+
+    isPizzaReady() {
+      return this.filledIngredients.length && !!this.pizza.name;
     },
   },
 
