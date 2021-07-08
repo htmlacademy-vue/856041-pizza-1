@@ -48,11 +48,11 @@ export default {
     getDoughValue({ name }) {
       switch (name) {
         case "Тонкое":
-          return "light";
+          return "small";
         case "Толстое":
-          return "large";
+          return "big";
         default:
-          return "large";
+          return "big";
       }
     },
 
