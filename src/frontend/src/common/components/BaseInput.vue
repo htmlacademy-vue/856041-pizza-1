@@ -2,7 +2,7 @@
   <label class="input">
     <slot></slot>
     <input
-      :type="text"
+      :type="type"
       :placeholder="placeholder"
       :required="required"
       :value="value"

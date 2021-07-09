@@ -1,46 +1,44 @@
 <template>
-  <main class="content">
-    <form action="#" method="post">
-      <div class="content__wrapper">
-        <h1 class="title title--big">Конструктор пиццы</h1>
+  <form action="#" method="post">
+    <div class="content__wrapper">
+      <h1 class="title title--big">Конструктор пиццы</h1>
 
-        <builder-dough-selector
-          :doughs="dough"
-          :selectedDough="pizza.dough"
-          @selectDough="selectDough"
-        />
+      <builder-dough-selector
+        :doughs="dough"
+        :selectedDough="pizza.dough"
+        @selectDough="selectDough"
+      />
 
-        <builder-size-selector
-          :sizes="sizes"
-          :selectedSize="pizza.size"
-          @selectSize="selectSize"
-        />
+      <builder-size-selector
+        :sizes="sizes"
+        :selectedSize="pizza.size"
+        @selectSize="selectSize"
+      />
 
-        <builder-ingredients-selector
-          :sauces="sauces"
-          :ingredients="pizza.ingredients"
-          :selectedSauce="pizza.sauce"
-          @selectSauce="selectSauce"
-          @selectIngredient="selectIngredients"
-        />
+      <builder-ingredients-selector
+        :sauces="sauces"
+        :ingredients="pizza.ingredients"
+        :selectedSauce="pizza.sauce"
+        @selectSauce="selectSauce"
+        @selectIngredient="selectIngredients"
+      />
 
-        <div class="content__pizza">
-          <builder-name-input v-model="pizza.name"></builder-name-input>
+      <div class="content__pizza">
+        <builder-name-input v-model="pizza.name"></builder-name-input>
 
-          <builder-pizza-view
-            :pizza="pizza"
-            :ingredients="filledIngredients"
-            @addIngredient="addIngredient"
-          ></builder-pizza-view>
+        <builder-pizza-view
+          :pizza="pizza"
+          :ingredients="filledIngredients"
+          @addIngredient="addIngredient"
+        ></builder-pizza-view>
 
-          <builder-price-counter
-            :price="pizzaPrice"
-            :disabled="!isPizzaReady"
-          ></builder-price-counter>
-        </div>
+        <builder-price-counter
+          :price="pizzaPrice"
+          :disabled="!isPizzaReady"
+        ></builder-price-counter>
       </div>
-    </form>
-  </main>
+    </div>
+  </form>
 </template>
 
 <script>
