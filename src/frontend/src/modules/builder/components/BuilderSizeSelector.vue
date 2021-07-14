@@ -9,7 +9,7 @@
           :key="size.multiplier"
           :modelValue="getModelValue"
           :value="size.value"
-          @change="$emit('selectSize', size)"
+          @change="selectSize(size)"
         >
           <div
             class="image-wrapper"
@@ -23,6 +23,9 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
+import { SET_PIZZA_PARAM } from "@/store/mutations-types";
 import BaseRadioSelector from "@/common/components/BaseRadioSelector.vue";
 
 export default {
@@ -32,25 +35,29 @@ export default {
     BaseRadioSelector,
   },
 
-  props: {
-    sizes: {
-      type: Array,
-      required: true,
-    },
-
-    selectedSize: {
-      type: Object,
-      default: () => {},
-    },
-  },
-
   computed: {
+    sizes() {
+      return this.$store.state.Builder.data.sizes;
+    },
+
+    selectedSize() {
+      return this.$store.state.Builder.pizza.size;
+    },
+
     getModelValue() {
       return this.selectedSize && this.selectedSize.value;
     },
   },
 
   methods: {
+    ...mapMutations("Builder", {
+      setPizzaParam: SET_PIZZA_PARAM,
+    }),
+
+    selectSize(size) {
+      this.setPizzaParam({ param: "size", value: size });
+    },
+
     getDiameterImageClasses(value) {
       return [
         "diameter-input__image-wrapper",

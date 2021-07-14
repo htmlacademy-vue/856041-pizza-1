@@ -5,11 +5,7 @@
 
       <builder-dough-selector />
 
-      <builder-size-selector
-        :sizes="sizes"
-        :selectedSize="pizza.size"
-        @selectSize="selectSize"
-      />
+      <builder-size-selector />
 
       <builder-ingredients-selector
         :sauces="sauces"
