@@ -1,11 +1,13 @@
 <template>
   <div class="content__result">
-    <p>Итого: {{ price }} ₽</p>
-    <BaseButton :disabled="disabled"> Готовьте! </BaseButton>
+    <p>Итого: {{ pizzaPrice }} ₽</p>
+    <BaseButton :disabled="!isPizzaReady"> Готовьте! </BaseButton>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 import BaseButton from "@/common/components/BaseButton.vue";
 
 export default {
@@ -15,16 +17,8 @@ export default {
     BaseButton,
   },
 
-  props: {
-    price: {
-      type: Number,
-      required: true,
-    },
-
-    disabled: {
-      type: Boolean,
-      required: true,
-    },
+  computed: {
+    ...mapGetters("Builder", ["pizzaPrice", "isPizzaReady"]),
   },
 };
 </script>

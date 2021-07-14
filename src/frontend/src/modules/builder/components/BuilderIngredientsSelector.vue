@@ -11,7 +11,7 @@
 
           <ul class="ingridients__list">
             <li
-              v-for="(ingredient, index) in ingredients"
+              v-for="ingredient in ingredients"
               :key="ingredient.name"
               class="ingridients__item"
             >
@@ -26,7 +26,7 @@
 
               <base-item-counter
                 :value="ingredient.count"
-                @change="$emit('selectIngredient', $event, index)"
+                @change="editIngredient($event, ingredient)"
                 class="ingridients__counter"
               />
             </li>
@@ -38,11 +38,14 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 import BuilderSauceSelector from "@/modules/builder/components/BuilderSauceSelector.vue";
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
 import BaseDrag from "@/common/components/BaseDrag.vue";
 
 import { MAX_INGREDIENTS_COUNT } from "@/common/constants.js";
+import { UPDATE_PIZZA_INGREDIENT } from "@/store/mutations-types";
 
 export default {
   name: "BuilderIngredientsSelector",
@@ -53,36 +56,26 @@ export default {
     BaseDrag,
   },
 
-  props: {
-    sauces: {
-      type: Array,
-      required: true,
+  computed: {
+    ingredients() {
+      return this.$store.state.Builder.pizza.ingredients;
     },
-
-    ingredients: {
-      type: Array,
-      required: true,
-    },
-
-    selectedSauce: {
-      type: Object,
-      default: () => {},
-    },
-  },
-
-  data() {
-    return {
-      counter: 0,
-    };
   },
 
   methods: {
+    ...mapMutations("Builder", {
+      updatePizzaIngredient: UPDATE_PIZZA_INGREDIENT,
+    }),
+
     isDragAvailable({ count }) {
       return count < MAX_INGREDIENTS_COUNT;
     },
 
-    getModelValue({ value }) {
-      return value === this.selectedSauce?.value;
+    editIngredient(count, ingredient) {
+      this.updatePizzaIngredient({
+        name: ingredient.name,
+        type: count > ingredient.count ? "increment" : "decrement",
+      });
     },
   },
 };
