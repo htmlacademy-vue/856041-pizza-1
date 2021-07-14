@@ -4,24 +4,7 @@
       <h2 class="title title--small sheet__title">Выберите ингридиенты</h2>
 
       <div class="sheet__content ingridients">
-        <div class="ingridients__sauce">
-          <p>Основной соус:</p>
-
-          <label
-            v-for="sauce in sauces"
-            :key="sauce.name"
-            class="radio ingridients__input"
-          >
-            <input
-              type="radio"
-              name="sauce"
-              :value="sauce.value"
-              :checked="getModelValue(sauce)"
-              @change="$emit('selectSauce', sauce)"
-            />
-            <span>{{ sauce.name }}</span>
-          </label>
-        </div>
+        <builder-sauce-selector />
 
         <div class="ingridients__filling">
           <p>Начинка:</p>
@@ -55,6 +38,7 @@
 </template>
 
 <script>
+import BuilderSauceSelector from "@/modules/builder/components/BuilderSauceSelector.vue";
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
 import BaseDrag from "@/common/components/BaseDrag.vue";
 
@@ -64,6 +48,7 @@ export default {
   name: "BuilderIngredientsSelector",
 
   components: {
+    BuilderSauceSelector,
     BaseItemCounter,
     BaseDrag,
   },
