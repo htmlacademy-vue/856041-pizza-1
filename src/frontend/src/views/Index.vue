@@ -3,11 +3,7 @@
     <div class="content__wrapper">
       <h1 class="title title--big">Конструктор пиццы</h1>
 
-      <builder-dough-selector
-        :doughs="dough"
-        :selectedDough="pizza.dough"
-        @selectDough="selectDough"
-      />
+      <builder-dough-selector />
 
       <builder-size-selector
         :sizes="sizes"

@@ -7,7 +7,7 @@
         <base-radio-selector
           v-for="el in doughs"
           :modelValue="getModelValue"
-          @change="$emit('selectDough', el)"
+          @change="selectDough(el)"
           :key="el.name"
           :value="el.value"
         >
@@ -23,6 +23,9 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
+import { SET_PIZZA_PARAM } from "@/store/mutations-types";
 import BaseRadioSelector from "@/common/components/BaseRadioSelector.vue";
 
 export default {
@@ -32,21 +35,27 @@ export default {
     BaseRadioSelector,
   },
 
-  props: {
-    doughs: {
-      type: Array,
-      required: true,
+  computed: {
+    doughs() {
+      return this.$store.state.Builder.data.doughs;
     },
 
-    selectedDough: {
-      type: Object,
-      default: () => {},
+    selectedDough() {
+      return this.$store.state.Builder.pizza.dough;
+    },
+
+    getModelValue() {
+      return this.selectedDough && this.selectedDough.value;
     },
   },
 
-  computed: {
-    getModelValue() {
-      return this.selectedDough && this.selectedDough.value;
+  methods: {
+    ...mapMutations("Builder", {
+      setPizzaParam: SET_PIZZA_PARAM,
+    }),
+
+    selectDough(dough) {
+      this.setPizzaParam({ param: "dough", value: dough });
     },
   },
 };
