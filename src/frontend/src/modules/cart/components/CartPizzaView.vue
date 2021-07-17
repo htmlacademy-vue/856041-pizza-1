@@ -25,13 +25,21 @@
     </div>
 
     <div class="cart-list__button">
-      <button type="button" class="cart-list__edit">Изменить</button>
+      <button type="button" @click="changePizza" class="cart-list__edit">
+        Изменить
+      </button>
     </div>
   </li>
 </template>
 
 <script>
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
+import { mapMutations } from "vuex";
+import {
+  UPDATE_ENTITY,
+  DELETE_ENTITY,
+  UPDATE_READY_PIZZA,
+} from "@/store/mutations-types";
 
 export default {
   name: "CartPizzaView",
@@ -67,9 +75,40 @@ export default {
       get() {
         return this.pizza.count;
       },
-      set() {
-        // TODO: Изменять значение каунтера в сторе.
+      set(val) {
+        if (val === 0) {
+          this.deleteEntity({
+            module: "Cart",
+            entity: "pizzas",
+            id: this.pizza.id,
+          });
+        } else {
+          this.updateEntity({
+            module: "Cart",
+            entity: "pizzas",
+            value: {
+              ...this.pizza,
+              count: val,
+            },
+          });
+        }
       },
+    },
+  },
+
+  methods: {
+    ...mapMutations({
+      updateEntity: UPDATE_ENTITY,
+      deleteEntity: DELETE_ENTITY,
+    }),
+
+    ...mapMutations("Builder", {
+      updateReadyPizza: UPDATE_READY_PIZZA,
+    }),
+
+    changePizza() {
+      this.updateReadyPizza(this.pizza);
+      this.$router.push("/");
     },
   },
 };

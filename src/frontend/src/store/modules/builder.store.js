@@ -13,6 +13,7 @@ import {
   UPDATE_PIZZA_INGREDIENT,
   SET_PIZZA_PARAM,
   ADD_ENTITY,
+  UPDATE_READY_PIZZA,
 } from "@/store/mutations-types";
 
 export default {
@@ -68,6 +69,14 @@ export default {
       state.pizza.sauce = state.data.sauces?.[0] ?? null;
       state.pizza.ingredients = [...state.data.ingredients];
       state.pizza.name = "";
+    },
+
+    [UPDATE_READY_PIZZA](state, { name, ingredients, sauce, size, dough }) {
+      state.pizza.name = name;
+      state.pizza.ingredients = ingredients;
+      state.pizza.size = size;
+      state.pizza.sauce = sauce;
+      state.pizza.dough = dough;
     },
 
     [UPDATE_PIZZA_INGREDIENT](state, { name, type }) {

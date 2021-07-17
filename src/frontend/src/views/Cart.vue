@@ -18,7 +18,7 @@
       </div>
     </main>
 
-    <cart-footer></cart-footer>
+    <cart-footer v-if="!isCartEmpty"></cart-footer>
   </form>
 </template>
 
