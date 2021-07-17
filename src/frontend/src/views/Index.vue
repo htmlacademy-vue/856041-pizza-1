@@ -1,23 +1,25 @@
 <template>
-  <form action="#" method="post">
-    <div class="content__wrapper">
-      <h1 class="title title--big">Конструктор пиццы</h1>
+  <main class="content">
+    <form action="#" method="post">
+      <div class="content__wrapper">
+        <h1 class="title title--big">Конструктор пиццы</h1>
 
-      <builder-dough-selector />
+        <builder-dough-selector />
 
-      <builder-size-selector />
+        <builder-size-selector />
 
-      <builder-ingredients-selector />
+        <builder-ingredients-selector />
 
-      <div class="content__pizza">
-        <builder-name-input />
+        <div class="content__pizza">
+          <builder-name-input />
 
-        <builder-pizza-view />
+          <builder-pizza-view />
 
-        <builder-price-counter />
+          <builder-price-counter />
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </main>
 </template>
 
 <script>
