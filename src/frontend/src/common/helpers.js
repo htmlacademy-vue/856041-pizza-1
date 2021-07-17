@@ -1,3 +1,5 @@
+import { uniqueId } from "lodash";
+
 export const getNameFromPath = (path) => {
   if (!path) return "";
 
@@ -74,6 +76,16 @@ export const prepareDoughs = (doughs) => {
     return {
       ...el,
       value: getDoughValue(el),
+    };
+  });
+};
+
+export const prepareAdditionals = (additionals) => {
+  return additionals.map((el) => {
+    return {
+      ...el,
+      id: uniqueId(),
+      count: 0,
     };
   });
 };

@@ -6,13 +6,15 @@
           <h1 class="title title--big">Корзина</h1>
         </div>
 
-        <cart-empty />
+        <cart-empty v-if="isCartEmpty" />
 
-        <cart-list />
+        <template v-else>
+          <cart-list />
 
-        <cart-additional />
+          <cart-additional />
 
-        <cart-form />
+          <cart-form />
+        </template>
       </div>
     </main>
 
@@ -26,6 +28,7 @@ import CartFooter from "@/modules/cart/components/CartFooter.vue";
 import CartList from "@/modules/cart/components/CartList.vue";
 import CartAdditional from "@/modules/cart/components/CartAdditional.vue";
 import CartForm from "@/modules/cart/components/CartForm.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "CartIndex",
@@ -36,6 +39,10 @@ export default {
     CartList,
     CartAdditional,
     CartForm,
+  },
+
+  computed: {
+    ...mapGetters("Cart", ["isCartEmpty"]),
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <main class="content">
-    <form action="#" method="post">
+    <form action="#" method="post" @submit.prevent="handleSubmit">
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
 
@@ -29,6 +29,7 @@ import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngr
 import BuilderPizzaView from "@/modules/builder/components/BuilderPizzaView.vue";
 import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounter.vue";
 import BuilderNameInput from "@/modules/builder/components/BuilderNameInput.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "IndexMain",
@@ -40,6 +41,14 @@ export default {
     BuilderPizzaView,
     BuilderPriceCounter,
     BuilderNameInput,
+  },
+
+  methods: {
+    ...mapActions("Builder", ["post"]),
+
+    handleSubmit() {
+      this.post();
+    },
   },
 };
 </script>

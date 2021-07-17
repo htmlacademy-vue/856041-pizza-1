@@ -1,3 +1,4 @@
+import { uniqueId } from "lodash";
 import pizza from "@/static/pizza.json";
 import {
   prepareDoughs,
@@ -11,6 +12,7 @@ import {
   RESET_PIZZA,
   UPDATE_PIZZA_INGREDIENT,
   SET_PIZZA_PARAM,
+  ADD_ENTITY,
 } from "@/store/mutations-types";
 
 export default {
@@ -106,6 +108,26 @@ export default {
       commit(SET_BUILDER_DATA, data);
 
       // После загрузки всех данных сбрасываем состояние текущей пиццы к дефолтному
+      commit(RESET_PIZZA);
+    },
+
+    post({ state, getters, commit }) {
+      // Добавление пиццы в корзину и обнуление полей
+      commit(
+        ADD_ENTITY,
+        {
+          module: "Cart",
+          entity: "pizzas",
+          value: {
+            ...state.pizza,
+            price: getters["pizzaPrice"],
+            count: 1,
+            id: uniqueId(),
+          },
+        },
+        { root: true }
+      );
+
       commit(RESET_PIZZA);
     },
   },

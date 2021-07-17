@@ -1,7 +1,7 @@
 <template>
   <div class="content__result">
     <p>Итого: {{ pizzaPrice }} ₽</p>
-    <BaseButton :disabled="!isPizzaReady"> Готовьте! </BaseButton>
+    <BaseButton type="submit" :disabled="!isPizzaReady"> Готовьте! </BaseButton>
   </div>
 </template>
 
