@@ -26,6 +26,7 @@
 
               <base-item-counter
                 :value="ingredient.count"
+                :maxCount="3"
                 @change="editIngredient($event, ingredient)"
                 class="ingridients__counter"
               />
