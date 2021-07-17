@@ -1,4 +1,7 @@
-import { SET_DELIVERY_PARAM } from "@/store/mutations-types";
+import { SET_DELIVERY_PARAM, ADD_ENTITY } from "@/store/mutations-types";
+import { prepareAdditionals } from "@/common/helpers";
+
+import misc from "@/static/misc.json";
 
 export default {
   namespaced: true,
@@ -21,7 +24,12 @@ export default {
     },
 
     getTotalPrice: (state) => {
-      const additionalPrice = 0;
+      const additionalPrice = state.additional.reduce(
+        (sum, { price, count }) => {
+          return sum + price * count;
+        },
+        0
+      );
 
       const pizzasPrice = state.pizzas.reduce((sum, { price, count }) => {
         return sum + price * count;
@@ -34,6 +42,24 @@ export default {
   mutations: {
     [SET_DELIVERY_PARAM](state, { param, value }) {
       state.delivery[param] = value;
+    },
+  },
+
+  actions: {
+    query({ commit }) {
+      const additionals = prepareAdditionals(misc);
+
+      additionals.forEach((el) => {
+        commit(
+          ADD_ENTITY,
+          {
+            module: "Cart",
+            entity: "additional",
+            value: el,
+          },
+          { root: true }
+        );
+      });
     },
   },
 };

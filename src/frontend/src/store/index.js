@@ -56,6 +56,7 @@ const mutations = {
 const actions = {
   async init({ dispatch }) {
     dispatch("Builder/query");
+    dispatch("Cart/query");
   },
 };
 
