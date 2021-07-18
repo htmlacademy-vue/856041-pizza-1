@@ -1,4 +1,8 @@
-import { SET_DELIVERY_PARAM, ADD_ENTITY } from "@/store/mutations-types";
+import {
+  SET_DELIVERY_PARAM,
+  ADD_ENTITY,
+  RESET_CART,
+} from "@/store/mutations-types";
 import { prepareAdditionals } from "@/common/helpers";
 
 import misc from "@/static/misc.json";
@@ -42,6 +46,18 @@ export default {
   mutations: {
     [SET_DELIVERY_PARAM](state, { param, value }) {
       state.delivery[param] = value;
+    },
+
+    [RESET_CART](state) {
+      state.pizzas = [];
+      state.delivery = {
+        type: "pickup",
+        phone: "",
+        street: "",
+        house: "",
+        flat: "",
+      };
+      state.additional = state.additional.map((el) => (el.count = 0));
     },
   },
 
