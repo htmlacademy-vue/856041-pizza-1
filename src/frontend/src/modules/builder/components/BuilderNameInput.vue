@@ -5,6 +5,10 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
+import { SET_PIZZA_PARAM } from "@/store/mutations-types";
+
 import BaseInput from "@/common/components/BaseInput.vue";
 
 export default {
@@ -14,27 +18,22 @@ export default {
     BaseInput,
   },
 
-  model: {
-    prop: "value",
-    change: "change",
-  },
-
-  props: {
-    value: {
-      type: String,
-      required: true,
-    },
-  },
-
   computed: {
     name: {
       get() {
-        return this.value;
+        return this.$store.state.Builder.pizza.name;
       },
+
       set(val) {
-        return this.$emit("change", val);
+        this.setPizzaParam({ param: "name", value: val });
       },
     },
+  },
+
+  methods: {
+    ...mapMutations("Builder", {
+      setPizzaParam: SET_PIZZA_PARAM,
+    }),
   },
 };
 </script>

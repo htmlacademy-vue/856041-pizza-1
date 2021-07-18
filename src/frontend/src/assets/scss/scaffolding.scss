@@ -1,10 +1,4 @@
 body {
-  display: flex;
-  flex-direction: column;
-
-  min-width: 960px;
-  min-height: 100vh;
-
   color: $black;
   background-color: $white;
 
@@ -13,6 +7,14 @@ body {
   line-height: 16px;
 
   text-rendering: optimizeLegibility;
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 960px;
+  min-height: 100vh;
 }
 
 a {

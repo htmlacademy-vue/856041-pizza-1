@@ -1,10 +1,10 @@
 <template>
   <div class="content__constructor">
-    <base-drop @drop="$emit('addIngredient', $event)">
+    <base-drop @drop="addIngredient">
       <div :class="getPizzaFoundationClasses">
         <div class="pizza__wrapper">
           <div
-            v-for="ingredient in ingredients"
+            v-for="ingredient in filledIngredients"
             :key="ingredient.value"
             :class="getIngredientClasses(ingredient)"
           ></div>
@@ -15,6 +15,10 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
+
+import { UPDATE_PIZZA_INGREDIENT } from "@/store/mutations-types";
+
 import BaseDrop from "@/common/components/BaseDrop.vue";
 
 export default {
@@ -24,19 +28,13 @@ export default {
     BaseDrop,
   },
 
-  props: {
-    pizza: {
-      type: Object,
-      required: true,
-    },
-
-    ingredients: {
-      type: Array,
-      required: true,
-    },
-  },
-
   computed: {
+    ...mapGetters("Builder", ["filledIngredients"]),
+
+    pizza() {
+      return this.$store.state.Builder.pizza;
+    },
+
     getPizzaFoundationClasses() {
       const { sauce, dough } = this.pizza;
       if (sauce && dough) {
@@ -48,6 +46,17 @@ export default {
   },
 
   methods: {
+    ...mapMutations("Builder", {
+      updatePizzaIngredient: UPDATE_PIZZA_INGREDIENT,
+    }),
+
+    addIngredient({ name }) {
+      this.updatePizzaIngredient({
+        name: name,
+        type: "increment",
+      });
+    },
+
     getIngredientClasses({ count, value }) {
       const getMultiplyClass = (count) => {
         switch (count) {
