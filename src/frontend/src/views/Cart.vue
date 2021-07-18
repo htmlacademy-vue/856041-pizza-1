@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import { RESET_CART } from "@/store/mutations-types";
 
 import CartEmpty from "@/modules/cart/components/CartEmpty.vue";
@@ -66,10 +66,16 @@ export default {
     ...mapGetters("Cart", ["isCartEmpty"]),
   },
 
+  created() {
+    this.query();
+  },
+
   methods: {
     ...mapMutations("Cart", {
       resetCart: RESET_CART,
     }),
+
+    ...mapActions("Cart", ["query"]),
 
     createOrder() {
       // Логика отправки формы и сброса корзины (пока только сброс)
