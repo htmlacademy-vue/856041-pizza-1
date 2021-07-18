@@ -57,7 +57,7 @@ export default {
         house: "",
         flat: "",
       };
-      state.additional = state.additional.map((el) => (el.count = 0));
+      state.additional = state.additional.map((el) => ({ ...el, count: 0 }));
     },
   },
 
