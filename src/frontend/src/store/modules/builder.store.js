@@ -1,11 +1,4 @@
 import { uniqueId } from "lodash";
-import pizza from "@/static/pizza.json";
-import {
-  prepareDoughs,
-  prepareIngredients,
-  prepareSauces,
-  prepareSizes,
-} from "@/common/helpers.js";
 
 import {
   SET_BUILDER_DATA,
@@ -104,14 +97,17 @@ export default {
   },
 
   actions: {
-    query({ commit }) {
-      // Первоначальный запрос всех компонентов пиццы (сейчас json)
-      // TODO: Запросы на каждые данные
+    async query({ commit }) {
+      const sauces = await this.$api.sauce.query();
+      const sizes = await this.$api.size.query();
+      const doughs = await this.$api.dough.query();
+      const ingredients = await this.$api.ingredient.query();
+
       const data = {
-        sauces: prepareSauces(pizza.sauces),
-        sizes: prepareSizes(pizza.sizes),
-        doughs: prepareDoughs(pizza.dough),
-        ingredients: prepareIngredients(pizza.ingredients),
+        sauces,
+        sizes,
+        doughs,
+        ingredients,
       };
 
       commit(SET_BUILDER_DATA, data);

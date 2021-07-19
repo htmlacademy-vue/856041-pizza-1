@@ -96,7 +96,7 @@ export class DoughApiService extends ReadOnlyApiService {
   }
 
   async query(config = {}) {
-    const doughs = super.query(config);
+    const doughs = await super.query(config);
     return doughs.map((dough) => this._normalize(dough));
   }
 }
@@ -127,7 +127,7 @@ export class SizeApiService extends ReadOnlyApiService {
   }
 
   async query(config = {}) {
-    const sizes = super.query(config);
+    const sizes = await super.query(config);
     return sizes.map((size) => this._normalize(size));
   }
 }
@@ -151,13 +151,13 @@ export class SauceApiService extends ReadOnlyApiService {
   _normalize(size) {
     return {
       ...size,
-      value: SauceApiService.getSizeValue(size),
+      value: SauceApiService.getSauceValue(size),
     };
   }
 
   async query(config = {}) {
-    const doughs = super.query(config);
-    return doughs.map((dough) => this._normalize(dough));
+    const sauces = await super.query(config);
+    return sauces.map((dough) => this._normalize(dough));
   }
 }
 
@@ -183,7 +183,7 @@ export class IngredientApiService extends ReadOnlyApiService {
   }
 
   async query(config = {}) {
-    const ingredients = super.query(config);
+    const ingredients = await super.query(config);
     return ingredients.map((ingredient) => this._normalize(ingredient));
   }
 }
@@ -201,7 +201,7 @@ export class MiscApiService extends ReadOnlyApiService {
   }
 
   async query(config = {}) {
-    const additionals = super.query(config);
+    const additionals = await super.query(config);
     return additionals.map((misc) => this._normalize(misc));
   }
 }
