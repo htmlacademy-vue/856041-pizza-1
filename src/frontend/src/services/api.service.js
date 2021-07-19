@@ -1,4 +1,4 @@
-import JwtService from "@/service/jwt.service";
+import JwtService from "@/services/jwt.service";
 import axios from "@/plugins/axios";
 
 export class BaseApiService {}
@@ -73,6 +73,10 @@ export class AuthApiService extends BaseApiService {
 }
 
 export class DoughApiService extends ReadOnlyApiService {
+  constructor() {
+    super("dough");
+  }
+
   static getDoughValue({ name }) {
     switch (name) {
       case "Тонкое":
@@ -97,7 +101,11 @@ export class DoughApiService extends ReadOnlyApiService {
   }
 }
 
-export class SizesApiService extends ReadOnlyApiService {
+export class SizeApiService extends ReadOnlyApiService {
+  constructor() {
+    super("sizes");
+  }
+
   static getSizeValue({ name }) {
     switch (name) {
       case "23 см":
@@ -114,7 +122,7 @@ export class SizesApiService extends ReadOnlyApiService {
   _normalize(size) {
     return {
       ...size,
-      value: SizesApiService.getSizeValue(size),
+      value: SizeApiService.getSizeValue(size),
     };
   }
 
@@ -125,6 +133,10 @@ export class SizesApiService extends ReadOnlyApiService {
 }
 
 export class SauceApiService extends ReadOnlyApiService {
+  constructor() {
+    super("sauces");
+  }
+
   static getSauceValue({ name }) {
     switch (name) {
       case "Томатный":
@@ -150,6 +162,10 @@ export class SauceApiService extends ReadOnlyApiService {
 }
 
 export class IngredientApiService extends ReadOnlyApiService {
+  constructor() {
+    super("ingredients");
+  }
+
   static getNameFromPath(path) {
     if (!path) return "";
 
@@ -173,6 +189,10 @@ export class IngredientApiService extends ReadOnlyApiService {
 }
 
 export class MiscApiService extends ReadOnlyApiService {
+  constructor() {
+    super("misc");
+  }
+
   _normalize(misc) {
     return {
       ...misc,
