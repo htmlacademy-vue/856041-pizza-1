@@ -3,9 +3,6 @@ import {
   ADD_ENTITY,
   RESET_CART,
 } from "@/store/mutations-types";
-import { prepareAdditionals } from "@/common/helpers";
-
-import misc from "@/static/misc.json";
 
 export default {
   namespaced: true,
@@ -62,8 +59,10 @@ export default {
   },
 
   actions: {
-    query({ commit }) {
-      const additionals = prepareAdditionals(misc);
+    async query({ commit, state }) {
+      if (state.additional.length > 0) return;
+
+      const additionals = await this.$api.misc.query();
 
       additionals.forEach((el) => {
         commit(
