@@ -14,4 +14,5 @@ export const INPUT_TYPES = [
   "reset",
   "submit",
   "text",
+  "email",
 ];
