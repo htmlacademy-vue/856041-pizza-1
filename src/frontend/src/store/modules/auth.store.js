@@ -39,7 +39,7 @@ export default {
 
     async setUser({ commit }) {
       try {
-        this.$api.auth.setAuthHeader();
+        await this.$api.auth.setAuthHeader();
         const user = await this.$api.auth.getMe();
         commit(SET_ENTITY, { entity: "user", value: user });
       } catch (error) {

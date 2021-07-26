@@ -14,7 +14,7 @@
       <router-link to="/cart">{{ getTotalPrice }} ₽</router-link>
     </div>
     <div class="header__user">
-      <a v-if="isUserLoggedIn" href="#">
+      <router-link v-if="isUserLoggedIn" to="/profile">
         <picture>
           <source type="image/webp" :srcset="getWebpSource" />
           <img
@@ -26,7 +26,7 @@
           />
         </picture>
         <span>{{ user.name }}</span>
-      </a>
+      </router-link>
 
       <a @click.prevent="handleLogin" href="#" class="header__login">
         <span>{{ isUserLoggedIn ? "Выйти" : "Войти" }}</span>
@@ -37,6 +37,11 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
+import {
+  getDoubleImage,
+  getDoubleWebpImage,
+  getWebpImage,
+} from "@/common/helpers";
 
 export default {
   name: "AppLayoutHeader",
@@ -54,8 +59,8 @@ export default {
       const { avatar } = this.user;
       if (!avatar) return "";
 
-      const normalWebp = avatar.replace(".jpg", ".webp");
-      const doubleWebp = avatar.replace(".jpg", "@2x.webp");
+      const normalWebp = getWebpImage(avatar);
+      const doubleWebp = getDoubleWebpImage(avatar);
       return `${normalWebp} 1x, ${doubleWebp} 2x`;
     },
 
@@ -63,7 +68,7 @@ export default {
       const { avatar } = this.user;
       if (!avatar) return "";
 
-      return avatar.replace(".jpg", "@2x.jpg");
+      return getDoubleImage(avatar);
     },
   },
 
@@ -74,10 +79,10 @@ export default {
       if (this.isUserLoggedIn) {
         await this.logout();
         if (this.$route.fullPath !== "/") {
-          this.$router.push("/");
+          await this.$router.push("/");
         }
       } else {
-        this.$router.push("/login");
+        await this.$router.push("/login");
       }
     },
   },
