@@ -6,6 +6,7 @@ export default {
   state: () => ({
     error: null,
     user: null,
+    addresses: [],
   }),
 
   mutations: {
@@ -37,11 +38,12 @@ export default {
       }
     },
 
-    async setUser({ commit }) {
+    async setUser({ commit, dispatch }) {
       try {
         await this.$api.auth.setAuthHeader();
         const user = await this.$api.auth.getMe();
         commit(SET_ENTITY, { entity: "user", value: user });
+        dispatch("loadAddresses");
       } catch (error) {
         this.$jwt.deleteToken();
       }
@@ -51,6 +53,11 @@ export default {
       await this.$api.auth.logout();
       this.$jwt.deleteToken();
       commit(DELETE_ENTITY, { entity: "user" });
+    },
+
+    async loadAddresses({ commit }) {
+      const addresses = await this.$api.addresses.get();
+      commit(SET_ENTITY, { entity: "addresses", value: addresses });
     },
   },
 };
