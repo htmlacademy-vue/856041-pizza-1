@@ -1,4 +1,4 @@
-import { SET_ENTITY, DELETE_ENTITY } from "@/store/mutations-types";
+import { SET_ENTITY, DELETE_ENTITY, ADD_ENTITY } from "@/store/mutations-types";
 
 export default {
   namespaced: true,
@@ -16,6 +16,10 @@ export default {
 
     [DELETE_ENTITY](state, { entity }) {
       state[entity] = null;
+    },
+
+    [ADD_ENTITY](state, { entity, value }) {
+      state[entity] = [...state[entity], value];
     },
   },
 
@@ -58,6 +62,11 @@ export default {
     async loadAddresses({ commit }) {
       const addresses = await this.$api.addresses.get();
       commit(SET_ENTITY, { entity: "addresses", value: addresses });
+    },
+
+    async addAddress({ commit }, payload) {
+      const result = await this.$api.addresses.post(payload);
+      commit(ADD_ENTITY, { entity: "addresses", value: result });
     },
   },
 };
