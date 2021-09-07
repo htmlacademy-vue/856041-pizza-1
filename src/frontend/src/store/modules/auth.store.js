@@ -1,4 +1,9 @@
-import { SET_ENTITY, DELETE_ENTITY, ADD_ENTITY } from "@/store/mutations-types";
+import {
+  SET_ENTITY,
+  DELETE_ENTITY,
+  ADD_ENTITY,
+  UPDATE_ENTITY,
+} from "@/store/mutations-types";
 
 export default {
   namespaced: true,
@@ -20,6 +25,17 @@ export default {
 
     [ADD_ENTITY](state, { entity, value }) {
       state[entity] = [...state[entity], value];
+    },
+
+    [UPDATE_ENTITY](state, { entity, value }) {
+      const index = state[entity].findIndex(({ id }) => id === value.id);
+      if (~index) {
+        state[entity].splice(index, 1, value);
+      }
+    },
+
+    [DELETE_ENTITY](state, { entity, id }) {
+      state[entity] = state[entity].filter((e) => +e.id !== +id);
     },
   },
 
@@ -67,6 +83,16 @@ export default {
     async addAddress({ commit }, payload) {
       const result = await this.$api.addresses.post(payload);
       commit(ADD_ENTITY, { entity: "addresses", value: result });
+    },
+
+    async updateAddress({ commit }, payload) {
+      await this.$api.addresses.put(payload);
+      commit(UPDATE_ENTITY, { entity: "addresses", value: payload });
+    },
+
+    async deleteAddress({ commit }, id) {
+      await this.$api.addresses.delete(id);
+      commit(DELETE_ENTITY, { entity: "addresses", id });
     },
   },
 };

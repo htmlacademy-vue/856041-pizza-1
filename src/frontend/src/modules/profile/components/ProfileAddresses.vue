@@ -1,37 +1,27 @@
 <template>
   <div class="addresses">
-    <div class="layout__address">
-      <div class="sheet address-form">
-        <div class="address-form__header">
-          <b>Адрес №1. Тест</b>
-          <div class="address-form__edit">
-            <button type="button" class="icon">
-              <span class="visually-hidden">Изменить адрес</span>
-            </button>
-          </div>
-        </div>
-        <p>Невский пр., д. 22, оф. 46</p>
-        <small>Позвоните, пожалуйста, от проходной</small>
-      </div>
-    </div>
-    <div class="layout__address">
-      <div class="sheet address-form">
-        <div class="address-form__header">
-          <b>Адрес №1. Тест</b>
-          <div class="address-form__edit">
-            <button type="button" class="icon">
-              <span class="visually-hidden">Изменить адрес</span>
-            </button>
-          </div>
-        </div>
-        <p>Невский пр., д. 22, оф. 46</p>
-        <small>Позвоните, пожалуйста, от проходной</small>
-      </div>
-    </div>
-    <profile-address-edit-item @done="saveAddress" />
+    <profile-address-view-item
+      v-for="(address, index) in addresses"
+      :key="address.id"
+      :address="address"
+      :index="index + 1"
+      @editAddress="editAddress(address)"
+    />
+
+    <profile-address-edit-item
+      v-if="showEditForm"
+      :counter="getAddressIndex"
+      :address="selectedAddress"
+      @done="saveAddress"
+      @delete="deleteSelectedAddress"
+    />
 
     <div class="layout__button">
-      <button type="button" class="button button--border">
+      <button
+        type="button"
+        class="button button--border"
+        @click="addNewAddress"
+      >
         Добавить новый адрес
       </button>
     </div>
@@ -40,6 +30,7 @@
 
 <script>
 import ProfileAddressEditItem from "./ProfileAddressEditItem.vue";
+import ProfileAddressViewItem from "./ProfileAddressViewItem.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
@@ -47,22 +38,58 @@ export default {
 
   components: {
     ProfileAddressEditItem,
+    ProfileAddressViewItem,
   },
 
   computed: {
     ...mapState("Auth", ["addresses"]),
+
+    getAddressIndex() {
+      if (this.selectedAddress) {
+        const { id } = this.selectedAddress;
+        const index = this.addresses.findIndex((el) => el.id === id);
+        return index + 1;
+      } else {
+        return this.addresses.length + 1;
+      }
+    },
   },
 
   data() {
     return {
-      selectedAddress: null,
+      selectedAddress: undefined,
+      showEditForm: false,
     };
   },
 
   methods: {
-    ...mapActions("Auth", ["addAddress"]),
+    ...mapActions("Auth", ["addAddress", "updateAddress", "deleteAddress"]),
+
     async saveAddress(address) {
-      await this.addAddress(address);
+      if (this.selectedAddress) {
+        await this.updateAddress({ ...address, id: this.selectedAddress.id });
+      } else {
+        await this.addAddress(address);
+      }
+      this.showEditForm = false;
+      this.selectedAddress = undefined;
+    },
+
+    addNewAddress() {
+      this.selectedAddress = undefined;
+      this.showEditForm = true;
+    },
+
+    editAddress(address) {
+      this.$set(this, "selectedAddress", address);
+      this.showEditForm = true;
+    },
+
+    async deleteSelectedAddress() {
+      const { id } = this.selectedAddress;
+      await this.deleteAddress(id);
+      this.showEditForm = false;
+      this.selectedAddress = undefined;
     },
   },
 };

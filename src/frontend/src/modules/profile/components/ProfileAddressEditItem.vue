@@ -1,12 +1,12 @@
 <template>
-  <div class="layout__address">
+  <div class="layout__address" ref="editForm">
     <form
       method="post"
       class="address-form address-form--opened sheet"
       @submit.prevent="saveAddress"
     >
       <div class="address-form__header">
-        <b>Адрес №1</b>
+        <b>Адрес №{{ counter }}</b>
       </div>
 
       <div class="address-form__wrapper">
@@ -75,6 +75,7 @@
           v-if="isEditing"
           type="button"
           class="button button--transparent"
+          @click="$emit('delete')"
         >
           Удалить
         </button>
@@ -85,13 +86,29 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "ProfileAddressEditItem",
 
   props: {
-    isEditing: {
-      type: Boolean,
-      default: false,
+    counter: {
+      type: Number,
+      required: true,
+    },
+
+    address: {
+      type: Object,
+      default: () => {},
+    },
+  },
+
+  computed: {
+    ...mapState("Auth", ["user"]),
+
+    isEditing() {
+      const { address } = this;
+      return address && Object.keys(address)?.length > 0;
     },
   },
 
@@ -108,8 +125,36 @@ export default {
   methods: {
     saveAddress() {
       const { name, street, building, flat, comment } = this;
-      const address = { name, street, building, flat, comment };
+      const { id: userId } = this.user;
+
+      const address = { name, street, building, flat, comment, userId };
       this.$emit("done", address);
+    },
+  },
+
+  watch: {
+    address: {
+      immediate: true,
+      deep: true,
+      async handler(address) {
+        if (!address) {
+          this.name = "";
+          this.street = "";
+          this.building = "";
+          this.flat = "";
+          this.comment = "";
+        } else if (Object.keys(address)?.length > 0) {
+          for (const [key, value] of Object.entries(address)) {
+            this[key] = value;
+          }
+        }
+
+        await this.$nextTick();
+        this.$refs.editForm.scrollIntoView({
+          block: "start",
+          behavior: "smooth",
+        });
+      },
     },
   },
 };
