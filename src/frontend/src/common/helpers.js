@@ -16,7 +16,7 @@ export const createResources = () => {
     [resources.DOUGH]: new DoughApiService(),
     [resources.INGREDIENT]: new IngredientApiService(),
     [resources.MISC]: new MiscApiService(),
-    [resources.ORDER]: new CrudApiService(resources.ORDER),
+    [resources.ORDERS]: new CrudApiService(resources.ORDERS),
     [resources.SAUCE]: new SauceApiService(),
     [resources.SIZE]: new SizeApiService(),
   };

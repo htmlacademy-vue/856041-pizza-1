@@ -4,7 +4,7 @@ export default {
   DOUGH: "dough",
   INGREDIENT: "ingredient",
   MISC: "misc",
-  ORDER: "order",
+  ORDERS: "orders",
   SAUCE: "sauce",
   SIZE: "size",
 };
