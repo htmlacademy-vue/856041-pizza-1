@@ -1,6 +1,7 @@
 import Vue from "vue";
 import JWTService from "@/services/jwt.service";
 import { createResources } from "@/common/helpers";
+import VueMask from "v-mask";
 
 const plugins = {
   install(Vue) {
@@ -16,3 +17,4 @@ const plugins = {
 };
 
 Vue.use(plugins);
+Vue.use(VueMask);
