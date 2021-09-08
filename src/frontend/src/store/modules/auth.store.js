@@ -33,10 +33,6 @@ export default {
         state[entity].splice(index, 1, value);
       }
     },
-
-    [DELETE_ENTITY](state, { entity, id }) {
-      state[entity] = state[entity].filter((e) => +e.id !== +id);
-    },
   },
 
   actions: {
@@ -92,7 +88,15 @@ export default {
 
     async deleteAddress({ commit }, id) {
       await this.$api.addresses.delete(id);
-      commit(DELETE_ENTITY, { entity: "addresses", id });
+      commit(
+        DELETE_ENTITY,
+        {
+          module: "Auth",
+          entity: "addresses",
+          value: id,
+        },
+        { root: true }
+      );
     },
   },
 };
