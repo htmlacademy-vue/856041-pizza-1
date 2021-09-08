@@ -14,3 +14,4 @@ export const SET_PIZZA_PARAM = "SET_PIZZA_PARAM";
 // Cart
 export const SET_DELIVERY_PARAM = "SET_DELIVERY_PARAM";
 export const RESET_CART = "RESET_CART";
+export const RESET_DELIVERY = "RESET_DELIVERY";
