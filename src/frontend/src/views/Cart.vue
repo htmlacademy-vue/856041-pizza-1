@@ -66,7 +66,7 @@ export default {
     ...mapGetters("Cart", ["isCartEmpty"]),
   },
 
-  created() {
+  mounted() {
     this.query();
   },
 

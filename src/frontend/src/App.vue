@@ -18,6 +18,9 @@ export default {
 
   created() {
     this.$store.dispatch("init");
+    if (this.$jwt.getToken()) {
+      this.$store.dispatch("Auth/setUser");
+    }
   },
 };
 </script>

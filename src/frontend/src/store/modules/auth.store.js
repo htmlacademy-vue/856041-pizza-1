@@ -54,12 +54,11 @@ export default {
       }
     },
 
-    async setUser({ commit, dispatch }) {
+    async setUser({ commit }) {
       try {
-        await this.$api.auth.setAuthHeader();
+        this.$api.auth.setAuthHeader();
         const user = await this.$api.auth.getMe();
         commit(SET_ENTITY, { entity: "user", value: user });
-        dispatch("loadAddresses");
       } catch (error) {
         this.$jwt.deleteToken();
       }

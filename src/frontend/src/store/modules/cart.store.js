@@ -115,7 +115,11 @@ export default {
   },
 
   actions: {
-    async query({ commit, state }) {
+    async query({ commit, dispatch, state, rootState }) {
+      if (rootState.Auth.user?.id) {
+        await dispatch("Auth/loadAddresses", null, { root: true });
+      }
+
       if (state.additional.length > 0) return;
 
       const additionals = await this.$api.misc.query();
