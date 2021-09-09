@@ -1,6 +1,6 @@
 <template>
   <div class="popup">
-    <router-link to="/" class="close">
+    <router-link :to="redirectLink" class="close">
       <span class="visually-hidden">Закрыть попап</span>
     </router-link>
     <div class="popup__title">
@@ -8,13 +8,25 @@
     </div>
     <p>Мы начали готовить Ваш заказ, скоро привезём его вам ;)</p>
     <div class="popup__button">
-      <router-link to="/" class="button">Отлично, я жду!</router-link>
+      <router-link :to="redirectLink" class="button"
+        >Отлично, я жду!</router-link
+      >
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "CartSuccess",
+
+  computed: {
+    ...mapState("Auth", ["user"]),
+
+    redirectLink() {
+      const { id } = this.user;
+      return id ? "/orders" : "/";
+    },
+  },
 };
 </script>
