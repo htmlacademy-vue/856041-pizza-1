@@ -55,7 +55,7 @@ const mutations = {
 
 const actions = {
   async init({ dispatch }) {
-    dispatch("Builder/query");
+    await dispatch("Builder/query");
   },
 };
 

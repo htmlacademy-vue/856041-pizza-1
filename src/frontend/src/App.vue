@@ -16,10 +16,10 @@ export default {
     AppLayout,
   },
 
-  created() {
-    this.$store.dispatch("init");
+  async created() {
+    await this.$store.dispatch("init");
     if (this.$jwt.getToken()) {
-      this.$store.dispatch("Auth/setUser");
+      await this.$store.dispatch("Auth/setUser");
     }
   },
 };
