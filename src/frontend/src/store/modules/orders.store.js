@@ -37,6 +37,11 @@ export default {
       return doughs.find((dough) => id === dough.id);
     },
 
+    getMiscByID: (state, getters, rootState) => (id) => {
+      const { additional } = rootState.Cart;
+      return additional.find((misc) => id === misc.id);
+    },
+
     getFormattedPizza:
       (state, getters) =>
       ({ doughId, sizeId, sauceId, name, quantity, ingredients }) => {

@@ -26,34 +26,11 @@
     </ul>
 
     <ul class="order__additional">
-      <li>
-        <img
-          src="img/cola.svg"
-          width="20"
-          height="30"
-          alt="Coca-Cola 0,5 литра"
-        />
-        <p>
-          <span>Coca-Cola 0,5 литра</span>
-          <b>56 ₽</b>
-        </p>
-      </li>
-      <li>
-        <img src="img/sauce.svg" width="20" height="30" alt="Острый соус" />
-        <span>Острый соус <br />30 ₽</span>
-      </li>
-      <li>
-        <img
-          src="img/potato.svg"
-          width="20"
-          height="30"
-          alt="Картошка из печи"
-        />
-        <p>
-          <span>Картошка из печи</span>
-          <b>170 ₽</b>
-        </p>
-      </li>
+      <profile-order-item-misc
+        v-for="misc in order.orderMisc"
+        :misc="misc"
+        :key="misc.id"
+      />
     </ul>
 
     <p class="order__address">
@@ -64,10 +41,15 @@
 
 <script>
 import ProfileOrderItemPizza from "@/modules/profile/components/ProfileOrderItemPizza.vue";
+import ProfileOrderItemMisc from "@/modules/profile/components/ProfileOrderItemMisc.vue";
 
 export default {
-  components: { ProfileOrderItemPizza },
   name: "ProfileOrderItem",
+
+  components: {
+    ProfileOrderItemPizza,
+    ProfileOrderItemMisc,
+  },
 
   props: {
     order: {
