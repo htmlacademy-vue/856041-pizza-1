@@ -14,6 +14,13 @@ export default {
     addresses: [],
   }),
 
+  getters: {
+    getAddressByID: (state) => (id) => {
+      const { addresses } = state;
+      return addresses.find((address) => address.id === id);
+    },
+  },
+
   mutations: {
     [SET_ENTITY](state, { entity, value }) {
       state[entity] = value;
@@ -92,7 +99,7 @@ export default {
         {
           module: "Auth",
           entity: "addresses",
-          value: id,
+          id,
         },
         { root: true }
       );

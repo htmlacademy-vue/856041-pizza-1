@@ -1,9 +1,4 @@
-import {
-  SET_ENTITY,
-  DELETE_ENTITY,
-  ADD_ENTITY,
-  UPDATE_ENTITY,
-} from "@/store/mutations-types";
+import { SET_ENTITY, DELETE_ENTITY } from "@/store/mutations-types";
 
 export default {
   namespaced: true,
@@ -74,10 +69,12 @@ export default {
     getOrderPrice:
       (state, getters) =>
       ({ orderMisc, orderPizzas }) => {
-        const miscPrice = orderMisc.reduce((price, { miscId, quantity }) => {
-          const formattedMisc = getters.getMiscByID(miscId);
-          return price + formattedMisc.price * quantity;
-        }, 0);
+        const miscPrice = orderMisc
+          ? orderMisc.reduce((price, { miscId, quantity }) => {
+              const formattedMisc = getters.getMiscByID(miscId);
+              return price + formattedMisc.price * quantity;
+            }, 0)
+          : 0;
 
         const pizzasPrice = orderPizzas.reduce((price, pizza) => {
           return price + getters.getPizzaPrice(pizza);
@@ -87,31 +84,27 @@ export default {
       },
   },
 
-  mutations: {
-    [SET_ENTITY](state, { entity, value }) {
-      state[entity] = value;
-    },
-
-    [DELETE_ENTITY](state, { entity }) {
-      state[entity] = null;
-    },
-
-    [ADD_ENTITY](state, { entity, value }) {
-      state[entity] = [...state[entity], value];
-    },
-
-    [UPDATE_ENTITY](state, { entity, value }) {
-      const index = state[entity].findIndex(({ id }) => id === value.id);
-      if (~index) {
-        state[entity].splice(index, 1, value);
-      }
-    },
-  },
-
   actions: {
     async loadOrders({ commit }) {
       const orders = await this.$api.orders.get();
-      commit(SET_ENTITY, { entity: "orders", value: orders });
+      commit(
+        SET_ENTITY,
+        { module: "Orders", entity: "orders", value: orders },
+        { root: true }
+      );
+    },
+
+    async deleteOrder({ commit }, id) {
+      await this.$api.orders.delete(id);
+      commit(
+        DELETE_ENTITY,
+        {
+          module: "Orders",
+          entity: "orders",
+          id,
+        },
+        { root: true }
+      );
     },
   },
 };

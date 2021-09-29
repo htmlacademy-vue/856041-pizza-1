@@ -2,7 +2,7 @@
   <section class="sheet order">
     <div class="order__wrapper">
       <div class="order__number">
-        <b>Заказ #{{ id }}</b>
+        <b>Заказ #{{ order.id }}</b>
       </div>
 
       <div class="order__sum">
@@ -10,7 +10,13 @@
       </div>
 
       <div class="order__button">
-        <button type="button" class="button button--border">Удалить</button>
+        <button
+          type="button"
+          class="button button--border"
+          @click="deleteOrder(order.id)"
+        >
+          Удалить
+        </button>
       </div>
       <div class="order__button">
         <button type="button" class="button">Повторить</button>
@@ -33,8 +39,8 @@
       />
     </ul>
 
-    <p class="order__address">
-      Адрес доставки: Тест (или если адрес новый - писать целиком)
+    <p class="order__address" v-if="addressName">
+      Адрес доставки: {{ addressName }}
     </p>
   </section>
 </template>
@@ -42,7 +48,7 @@
 <script>
 import ProfileOrderItemPizza from "@/modules/profile/components/ProfileOrderItemPizza.vue";
 import ProfileOrderItemMisc from "@/modules/profile/components/ProfileOrderItemMisc.vue";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "ProfileOrderItem",
@@ -61,6 +67,21 @@ export default {
 
   computed: {
     ...mapGetters("Orders", ["getOrderPrice"]),
+    ...mapGetters("Auth", ["getAddressByID"]),
+
+    addressName() {
+      const { addressId } = this.order;
+      if (addressId) {
+        const { name } = this.getAddressByID(addressId);
+        return name;
+      } else {
+        return "";
+      }
+    },
+  },
+
+  methods: {
+    ...mapActions("Orders", ["deleteOrder"]),
   },
 };
 </script>

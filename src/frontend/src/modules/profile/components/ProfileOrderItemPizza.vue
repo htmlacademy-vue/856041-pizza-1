@@ -21,7 +21,8 @@
     </div>
 
     <p class="order__price">
-      {{ formattedPizza.quantity > 1 ? `${formattedPizza.quantity}x` : "" }}782
+      {{ formattedPizza.quantity > 1 ? `${formattedPizza.quantity}x` : "" }}
+      {{ getPizzaPrice(pizza) }}
       ₽
     </p>
   </li>
@@ -40,7 +41,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("Orders", ["getFormattedPizza"]),
+    ...mapGetters("Orders", ["getFormattedPizza", "getPizzaPrice"]),
 
     formattedPizza() {
       return this.getFormattedPizza(this.pizza);
