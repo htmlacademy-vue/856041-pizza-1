@@ -2,11 +2,11 @@
   <section class="sheet order">
     <div class="order__wrapper">
       <div class="order__number">
-        <b>Заказ #11199929</b>
+        <b>Заказ #{{ id }}</b>
       </div>
 
       <div class="order__sum">
-        <span>Сумма заказа: 1 564 ₽</span>
+        <span>Сумма заказа: {{ getOrderPrice(order) }} ₽</span>
       </div>
 
       <div class="order__button">
@@ -42,6 +42,7 @@
 <script>
 import ProfileOrderItemPizza from "@/modules/profile/components/ProfileOrderItemPizza.vue";
 import ProfileOrderItemMisc from "@/modules/profile/components/ProfileOrderItemMisc.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "ProfileOrderItem",
@@ -56,6 +57,10 @@ export default {
       type: Object,
       required: true,
     },
+  },
+
+  computed: {
+    ...mapGetters("Orders", ["getOrderPrice"]),
   },
 };
 </script>

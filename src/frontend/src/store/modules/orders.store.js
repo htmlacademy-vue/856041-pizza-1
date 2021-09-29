@@ -56,6 +56,35 @@ export default {
           quantity,
         };
       },
+
+    getPizzaPrice: (state, getters) => (pizza) => {
+      const { ingredients, size, sauce, dough } =
+        getters.getFormattedPizza(pizza);
+
+      const ingredientsPrice = ingredients.reduce(
+        (sum, { price, quantity }) => {
+          return sum + price * quantity;
+        },
+        0
+      );
+
+      return (ingredientsPrice + dough.price + sauce.price) * size.multiplier;
+    },
+
+    getOrderPrice:
+      (state, getters) =>
+      ({ orderMisc, orderPizzas }) => {
+        const miscPrice = orderMisc.reduce((price, { miscId, quantity }) => {
+          const formattedMisc = getters.getMiscByID(miscId);
+          return price + formattedMisc.price * quantity;
+        }, 0);
+
+        const pizzasPrice = orderPizzas.reduce((price, pizza) => {
+          return price + getters.getPizzaPrice(pizza);
+        }, 0);
+
+        return miscPrice + pizzasPrice;
+      },
   },
 
   mutations: {
