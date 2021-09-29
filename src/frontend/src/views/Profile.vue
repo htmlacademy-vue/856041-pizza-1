@@ -13,6 +13,7 @@
 <script>
 import ProfileInfo from "@/modules/profile/components/ProfileInfo.vue";
 import ProfileAddresses from "@/modules/profile/components/ProfileAddresses.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "ProfileIndex",
@@ -20,6 +21,14 @@ export default {
   components: {
     ProfileAddresses,
     ProfileInfo,
+  },
+
+  async mounted() {
+    await this.loadAddresses();
+  },
+
+  methods: {
+    ...mapActions("Auth", ["loadAddresses"]),
   },
 };
 </script>
