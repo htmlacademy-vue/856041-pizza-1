@@ -41,7 +41,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("Orders", ["getFormattedPizza", "getPizzaPrice"]),
+    ...mapGetters(["getFormattedPizza", "getPizzaPrice"]),
 
     formattedPizza() {
       return this.getFormattedPizza(this.pizza);

@@ -178,7 +178,7 @@ export class IngredientApiService extends ReadOnlyApiService {
     return {
       ...ingredient,
       value: IngredientApiService.getNameFromPath(ingredient.image),
-      count: 0,
+      quantity: 0,
     };
   }
 
@@ -196,7 +196,7 @@ export class MiscApiService extends ReadOnlyApiService {
   _normalize(misc) {
     return {
       ...misc,
-      count: 0,
+      quantity: 0,
     };
   }
 

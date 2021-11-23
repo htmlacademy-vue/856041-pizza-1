@@ -25,49 +25,46 @@ export default {
       return state.pizzas.length === 0;
     },
 
-    getTotalPrice: (state) => {
+    getTotalPrice: (state, getters, rootState, rootGetters) => {
       const additionalPrice = state.additional.reduce(
-        (sum, { price, count }) => {
-          return sum + price * count;
+        (sum, { price, quantity }) => {
+          return sum + price * quantity;
         },
         0
       );
 
-      const pizzasPrice = state.pizzas.reduce((sum, { price, count }) => {
-        return sum + price * count;
+      const pizzasPrice = state.pizzas.reduce((sum, pizza) => {
+        const price = rootGetters.getPizzaPrice(pizza);
+        return sum + price * pizza.quantity;
       }, 0);
 
       return additionalPrice + pizzasPrice;
     },
 
     formattedMisc: (state) => {
-      const misc = state.additional.filter((el) => el.count > 0);
+      const misc = state.additional.filter((el) => el.quantity > 0);
       return misc.map((el) => {
         return {
           miscId: el.id,
-          quantity: el.count,
+          quantity: el.quantity,
         };
       });
     },
 
     formattedPizzas: (state) => {
       const prepareIngredients = (pizza) => {
-        const ingredients = pizza.ingredients.filter((el) => el.count > 0);
-        return ingredients.map((ing) => {
+        const ingredients = pizza.ingredients.map((ing) => {
           return {
             ingredientId: ing.id,
-            quantity: ing.count,
+            quantity: ing.quantity,
           };
         });
+        return ingredients;
       };
 
       const preparePizza = (pizza) => {
         return {
-          name: pizza.name,
-          sauceId: pizza.sauce.id,
-          doughId: pizza.dough.id,
-          sizeId: pizza.size.id,
-          quantity: pizza.count,
+          ...pizza,
           ingredients: prepareIngredients(pizza),
         };
       };
@@ -100,7 +97,7 @@ export default {
 
     [RESET_CART](state) {
       state.pizzas = [];
-      state.additional = state.additional.map((el) => ({ ...el, count: 0 }));
+      state.additional = state.additional.map((el) => ({ ...el, quantity: 0 }));
     },
 
     [RESET_DELIVERY](state) {

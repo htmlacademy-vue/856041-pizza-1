@@ -26,7 +26,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("Orders", ["getMiscByID"]),
+    ...mapGetters(["getMiscByID"]),
 
     formattedMisc() {
       return this.getMiscByID(this.misc.miscId);
