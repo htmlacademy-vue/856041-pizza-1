@@ -25,7 +25,7 @@
               </base-drag>
 
               <base-item-counter
-                :value="ingredient.count"
+                :value="ingredient.quantity"
                 :maxCount="3"
                 @change="editIngredient($event, ingredient)"
                 class="ingridients__counter"
@@ -68,14 +68,14 @@ export default {
       updatePizzaIngredient: UPDATE_PIZZA_INGREDIENT,
     }),
 
-    isDragAvailable({ count }) {
-      return count < MAX_INGREDIENTS_COUNT;
+    isDragAvailable({ quantity }) {
+      return quantity < MAX_INGREDIENTS_COUNT;
     },
 
-    editIngredient(count, ingredient) {
+    editIngredient(quantity, ingredient) {
       this.updatePizzaIngredient({
         name: ingredient.name,
-        type: count > ingredient.count ? "increment" : "decrement",
+        type: quantity > ingredient.quantity ? "increment" : "decrement",
       });
     },
   },

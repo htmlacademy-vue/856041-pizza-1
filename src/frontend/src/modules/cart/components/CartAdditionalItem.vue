@@ -9,7 +9,7 @@
       <base-item-counter class="additional-list__counter" v-model="counter" />
 
       <div class="additional-list__price">
-        <b>{{ item.price * item.count }} ₽</b>
+        <b>{{ item.price * item.quantity }} ₽</b>
       </div>
     </div>
   </li>
@@ -37,7 +37,7 @@ export default {
   computed: {
     counter: {
       get() {
-        return this.item.count;
+        return this.item.quantity;
       },
       set(val) {
         this.updateEntity({
@@ -45,7 +45,7 @@ export default {
           entity: "additional",
           value: {
             ...this.item,
-            count: val,
+            quantity: val,
           },
         });
       },
