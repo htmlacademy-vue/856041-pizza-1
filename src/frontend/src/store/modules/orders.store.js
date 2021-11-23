@@ -1,4 +1,6 @@
 import { SET_ENTITY, DELETE_ENTITY } from "@/store/mutations-types";
+import { RESET_CART, ADD_ENTITY } from "@/store/mutations-types";
+// import { UPDATE_ENTITY } from "@/store/mutations-types";
 
 export default {
   namespaced: true,
@@ -29,9 +31,14 @@ export default {
   actions: {
     async loadOrders({ commit }) {
       const orders = await this.$api.orders.get();
+      // Костыль, так как приходят кривые данные с бэкенда (filter)
       commit(
         SET_ENTITY,
-        { module: "Orders", entity: "orders", value: orders },
+        {
+          module: "Orders",
+          entity: "orders",
+          value: orders.filter((el) => el.orderPizzas),
+        },
         { root: true }
       );
     },
@@ -47,6 +54,44 @@ export default {
         },
         { root: true }
       );
+    },
+
+    async repeatOrder({ commit }, order) {
+      const { orderPizzas } = order;
+
+      commit(`Orders/${RESET_CART}`, { root: true });
+
+      orderPizzas.forEach((pizza) => {
+        commit(
+          ADD_ENTITY,
+          {
+            module: "Cart",
+            entity: "pizzas",
+            value: pizza,
+          },
+          { root: true }
+        );
+      });
+
+      // TODO: Сделать заполнение ингридиентов правильно.
+      // Убрать использование данных и каунтеров в одном месте
+      // if (orderMisc.length) {
+      //   orderMisc.forEach((el) => {
+      //     const { miscId, quantity } = el;
+      //     commit(
+      //       UPDATE_ENTITY,
+      //       {
+      //         module: "Cart",
+      //         entity: "additional",
+      //         value: {
+      //           id: miscId,
+      //           quantity,
+      //         },
+      //       },
+      //       { root: true }
+      //     );
+      //   });
+      // }
     },
   },
 };
