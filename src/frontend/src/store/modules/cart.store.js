@@ -29,12 +29,10 @@ export default {
     },
 
     getTotalPrice: (state, getters, rootState, rootGetters) => {
-      const additionalPrice = state.additional.reduce(
-        (sum, { price, quantity }) => {
-          return sum + price * quantity;
-        },
-        0
-      );
+      const additionalPrice = state.misc.reduce((sum, { miscId, quantity }) => {
+        const { price } = rootGetters.getMiscByID(miscId);
+        return sum + price * quantity;
+      }, 0);
 
       const pizzasPrice = state.pizzas.reduce((sum, pizza) => {
         const price = rootGetters.getPizzaPrice(pizza);
