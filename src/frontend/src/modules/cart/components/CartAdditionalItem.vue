@@ -17,8 +17,8 @@
 
 <script>
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
-import { mapMutations } from "vuex";
-import { UPDATE_ENTITY } from "@/store/mutations-types";
+import { mapGetters, mapMutations } from "vuex";
+import { ADD_MISC, UPDATE_MISC } from "@/store/mutations-types";
 
 export default {
   name: "CartAdditionalItem",
@@ -35,26 +35,32 @@ export default {
   },
 
   computed: {
+    ...mapGetters("Cart", ["getCartMiscById"]),
+
     counter: {
       get() {
-        return this.item.quantity;
+        const misc = this.getCartMiscById(this.item.id);
+        return misc?.quantity ?? 0;
       },
       set(val) {
-        this.updateEntity({
-          module: "Cart",
-          entity: "additional",
-          value: {
-            ...this.item,
+        const misc = this.getCartMiscById(this.item.id);
+        if (misc?.quantity > 0) {
+          this.updateMisc({
+            ...misc,
             quantity: val,
-          },
-        });
+          });
+        } else {
+          const { id: miscId } = this.item;
+          this.addMisc(miscId);
+        }
       },
     },
   },
 
   methods: {
-    ...mapMutations({
-      updateEntity: UPDATE_ENTITY,
+    ...mapMutations("Cart", {
+      updateMisc: UPDATE_MISC,
+      addMisc: ADD_MISC,
     }),
   },
 };
