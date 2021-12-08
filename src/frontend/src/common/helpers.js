@@ -1,91 +1,68 @@
-import { uniqueId } from "lodash";
+import resources from "@/common/enums/resources";
+import {
+  AuthApiService,
+  DoughApiService,
+  IngredientApiService,
+  MiscApiService,
+  SauceApiService,
+  SizeApiService,
+  CrudApiService,
+} from "@/services/api.service";
 
-export const getNameFromPath = (path) => {
-  if (!path) return "";
-
-  const regexp = /^(.*)\/(.*)(\..*)$/;
-
-  return regexp.exec(path)[2] || false;
-};
-
-export const prepareIngredients = (ingredients) => {
-  return ingredients.map((el) => {
-    return {
-      ...el,
-      value: getNameFromPath(el.image),
-      count: 0,
-    };
-  });
-};
-
-export const prepareSauces = (sauces) => {
-  const getSauceValue = ({ name }) => {
-    switch (name) {
-      case "Томатный":
-        return "tomato";
-      case "Сливочный":
-        return "creamy";
-      default:
-        return "tomato";
-    }
+export const createResources = () => {
+  return {
+    [resources.AUTH]: new AuthApiService(),
+    [resources.ADDRESSES]: new CrudApiService(resources.ADDRESSES),
+    [resources.DOUGH]: new DoughApiService(),
+    [resources.INGREDIENT]: new IngredientApiService(),
+    [resources.MISC]: new MiscApiService(),
+    [resources.ORDERS]: new CrudApiService(resources.ORDERS),
+    [resources.SAUCE]: new SauceApiService(),
+    [resources.SIZE]: new SizeApiService(),
   };
-
-  return sauces.map((el) => {
-    return {
-      ...el,
-      value: getSauceValue(el),
-    };
-  });
 };
 
-export const prepareSizes = (sizes) => {
-  const getSizesValue = ({ name }) => {
-    switch (name) {
-      case "23 см":
-        return "small";
-      case "32 см":
-        return "normal";
-      case "45 см":
-        return "big";
-      default:
-        return "big";
-    }
-  };
-
-  return sizes.map((el) => {
-    return {
-      ...el,
-      value: getSizesValue(el),
-    };
-  });
+/**
+ *
+ * @param {string} url - ссылка на img
+ * @return {string} - возвращает ссылку с .webp
+ */
+export const getWebpImage = (url) => {
+  return url.replace(".jpg", ".webp");
 };
 
-export const prepareDoughs = (doughs) => {
-  const getDoughValue = ({ name }) => {
-    switch (name) {
-      case "Тонкое":
-        return "small";
-      case "Толстое":
-        return "big";
-      default:
-        return "big";
-    }
-  };
-
-  return doughs.map((el) => {
-    return {
-      ...el,
-      value: getDoughValue(el),
-    };
-  });
+/**
+ *
+ * @param {string} url - ссылка на img
+ * @return {string} - возвращает ссылку с двукратным префиксом и .webp
+ */
+export const getDoubleWebpImage = (url) => {
+  return url.replace(".jpg", "@2x.webp");
 };
 
-export const prepareAdditionals = (additionals) => {
-  return additionals.map((el) => {
-    return {
-      ...el,
-      id: uniqueId(),
-      count: 0,
-    };
-  });
+/**
+ *
+ * @param {string} url - ссылка на img
+ * @return {string} - возвращает ссылку с двукратным префиксом
+ */
+export const getDoubleImage = (url) => {
+  return url.replace(".jpg", "@2x.jpg");
+};
+
+/**
+ *
+ * @param {string} url - ссылка на img
+ * @return {string} - возвращает ссылку с четырехкратным префиксом
+ */
+export const getQuadrupleImage = (url) => {
+  return url.replace(".jpg", "@4x.jpg");
+};
+
+/**
+ *
+ * @param {string} url - ссылка на img
+ * @return {string} - возвращает ссылку с четырехкратным префиксом и .webp
+ */
+export const getQuadrupleWebp = (url) => {
+  return url.replace(".jpg", "@4x.webp");
 };

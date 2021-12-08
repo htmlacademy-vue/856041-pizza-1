@@ -57,9 +57,9 @@ export default {
       });
     },
 
-    getIngredientClasses({ count, value }) {
-      const getMultiplyClass = (count) => {
-        switch (count) {
+    getIngredientClasses({ quantity, value }) {
+      const getMultiplyClass = (quantity) => {
+        switch (quantity) {
           case 2:
             return "pizza__filling--second";
 
@@ -73,7 +73,7 @@ export default {
       return [
         "pizza__filling",
         `pizza__filling--${value}`,
-        `${getMultiplyClass(count)}`,
+        `${getMultiplyClass(quantity)}`,
       ];
     },
   },

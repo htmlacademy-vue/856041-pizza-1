@@ -2,10 +2,9 @@ import {
   SET_DELIVERY_PARAM,
   ADD_ENTITY,
   RESET_CART,
+  RESET_DELIVERY,
+  UPDATE_MISC,
 } from "@/store/mutations-types";
-import { prepareAdditionals } from "@/common/helpers";
-
-import misc from "@/static/misc.json";
 
 export default {
   namespaced: true,
@@ -17,9 +16,10 @@ export default {
       type: "pickup",
       phone: "",
       street: "",
-      house: "",
+      building: "",
       flat: "",
     },
+    misc: [],
   }),
 
   getters: {
@@ -27,19 +27,61 @@ export default {
       return state.pizzas.length === 0;
     },
 
-    getTotalPrice: (state) => {
-      const additionalPrice = state.additional.reduce(
-        (sum, { price, count }) => {
-          return sum + price * count;
-        },
-        0
-      );
+    getTotalPrice: (state, getters, rootState, rootGetters) => {
+      const additionalPrice = state.misc.reduce((sum, { miscId, quantity }) => {
+        const { price } = rootGetters.getMiscByID(miscId);
+        return sum + price * quantity;
+      }, 0);
 
-      const pizzasPrice = state.pizzas.reduce((sum, { price, count }) => {
-        return sum + price * count;
+      const pizzasPrice = state.pizzas.reduce((sum, pizza) => {
+        const price = rootGetters.getPizzaPrice(pizza);
+        return sum + price * pizza.quantity;
       }, 0);
 
       return additionalPrice + pizzasPrice;
+    },
+
+    getCartMiscById: (state) => (id) => {
+      const misc = state.misc.find(({ miscId }) => miscId === id);
+      return misc;
+    },
+
+    formattedPizzas: (state) => {
+      const prepareIngredients = (pizza) => {
+        const ingredients = pizza.ingredients.map((ing) => {
+          return {
+            ingredientId: ing.id,
+            quantity: ing.quantity,
+          };
+        });
+        return ingredients;
+      };
+
+      const preparePizza = (pizza) => {
+        return {
+          ...pizza,
+          ingredients: prepareIngredients(pizza),
+        };
+      };
+
+      return state.pizzas.map((el) => preparePizza(el));
+    },
+
+    formattedAddress: (state) => {
+      const { type, id, street, building, flat } = state.delivery;
+      if (type === "address") {
+        return {
+          id,
+        };
+      } else if (type === "delivery") {
+        return {
+          street,
+          building,
+          flat,
+        };
+      } else {
+        return null;
+      }
     },
   },
 
@@ -50,20 +92,39 @@ export default {
 
     [RESET_CART](state) {
       state.pizzas = [];
+      state.misc = [];
+    },
+
+    [RESET_DELIVERY](state) {
       state.delivery = {
-        type: "pickup",
+        type: "delivery",
         phone: "",
         street: "",
-        house: "",
+        building: "",
         flat: "",
       };
-      state.additional = state.additional.map((el) => ({ ...el, count: 0 }));
+    },
+
+    [UPDATE_MISC](state, misc) {
+      const { miscId } = misc;
+      const index = state.misc.findIndex(({ miscId: id }) => id === miscId);
+      if (~index) {
+        state.misc.splice(index, 1, misc);
+      } else {
+        state.misc.push(misc);
+      }
     },
   },
 
   actions: {
-    query({ commit }) {
-      const additionals = prepareAdditionals(misc);
+    async query({ commit, dispatch, state, rootState }) {
+      if (rootState.Auth.user?.id) {
+        await dispatch("Auth/loadAddresses", null, { root: true });
+      }
+
+      if (state.additional.length > 0) return;
+
+      const additionals = await this.$api.misc.query();
 
       additionals.forEach((el) => {
         commit(
@@ -76,6 +137,20 @@ export default {
           { root: true }
         );
       });
+    },
+
+    async createOrder({ commit, getters, state, rootState }) {
+      let order = {
+        userId: rootState.Auth.user?.id || null,
+        phone: state.delivery.phone,
+        address: getters.formattedAddress,
+        pizzas: getters.formattedPizzas,
+        misc: state.misc.filter((el) => el.quantity > 0),
+      };
+
+      await this.$api.orders.post(order);
+      commit(RESET_DELIVERY);
+      commit(RESET_CART);
     },
   },
 };

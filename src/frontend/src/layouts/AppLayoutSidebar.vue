@@ -10,8 +10,20 @@
       />
     </a>
 
-    <a class="layout__link layout__link--active" href="#">История заказов</a>
-    <a class="layout__link" href="#">Мои данные</a>
+    <router-link
+      class="layout__link"
+      to="/orders"
+      exact
+      exact-active-class="layout__link--active"
+      >История заказов</router-link
+    >
+    <router-link
+      class="layout__link"
+      to="/profile"
+      exact
+      exact-active-class="layout__link--active"
+      >Мои данные</router-link
+    >
   </div>
 </template>
 

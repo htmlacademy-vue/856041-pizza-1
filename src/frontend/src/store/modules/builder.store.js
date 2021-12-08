@@ -1,12 +1,3 @@
-import { uniqueId } from "lodash";
-import pizza from "@/static/pizza.json";
-import {
-  prepareDoughs,
-  prepareIngredients,
-  prepareSauces,
-  prepareSizes,
-} from "@/common/helpers.js";
-
 import {
   SET_BUILDER_DATA,
   RESET_PIZZA,
@@ -32,7 +23,7 @@ export default {
 
   getters: {
     filledIngredients: (state) => {
-      return state.pizza.ingredients.filter((el) => el.count > 0);
+      return state.pizza.ingredients.filter((el) => el.quantity > 0);
     },
 
     pizzaPrice: (state) => {
@@ -41,8 +32,8 @@ export default {
       if (!pizza.dough || !pizza.sauce || !pizza.size) return 0;
 
       const ingredientsPrice = pizza.ingredients.reduce(
-        (sum, { price, count }) => {
-          return sum + price * count;
+        (sum, { price, quantity }) => {
+          return sum + price * quantity;
         },
         0
       );
@@ -87,10 +78,10 @@ export default {
 
         switch (type) {
           case "increment":
-            item.count = item.count + 1;
+            item.quantity = item.quantity + 1;
             break;
           case "decrement":
-            item.count = item.count - 1;
+            item.quantity = item.quantity - 1;
             break;
         }
 
@@ -104,14 +95,17 @@ export default {
   },
 
   actions: {
-    query({ commit }) {
-      // Первоначальный запрос всех компонентов пиццы (сейчас json)
-      // TODO: Запросы на каждые данные
+    async query({ commit }) {
+      const sauces = await this.$api.sauce.query();
+      const sizes = await this.$api.size.query();
+      const doughs = await this.$api.dough.query();
+      const ingredients = await this.$api.ingredient.query();
+
       const data = {
-        sauces: prepareSauces(pizza.sauces),
-        sizes: prepareSizes(pizza.sizes),
-        doughs: prepareDoughs(pizza.dough),
-        ingredients: prepareIngredients(pizza.ingredients),
+        sauces,
+        sizes,
+        doughs,
+        ingredients,
       };
 
       commit(SET_BUILDER_DATA, data);
@@ -120,18 +114,38 @@ export default {
       commit(RESET_PIZZA);
     },
 
-    post({ state, getters, commit }) {
+    post({ state, commit }) {
       // Добавление пиццы в корзину и обнуление полей
+      const prepareIngredients = (pizza) => {
+        const ingredients = pizza.ingredients.filter((el) => el.quantity > 0);
+        return ingredients.map((ing) => {
+          return {
+            id: ing.id,
+            quantity: ing.quantity,
+          };
+        });
+      };
+
+      const preparePizza = (pizza) => {
+        return {
+          name: pizza.name,
+          sauceId: pizza.sauce.id,
+          doughId: pizza.dough.id,
+          sizeId: pizza.size.id,
+          ingredients: prepareIngredients(pizza),
+        };
+      };
+
+      const formattedPizza = preparePizza(state.pizza);
+
       commit(
         ADD_ENTITY,
         {
           module: "Cart",
           entity: "pizzas",
           value: {
-            ...state.pizza,
-            price: getters["pizzaPrice"],
-            count: 1,
-            id: uniqueId(),
+            ...formattedPizza,
+            quantity: 1,
           },
         },
         { root: true }

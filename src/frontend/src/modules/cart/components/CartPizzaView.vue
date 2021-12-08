@@ -11,8 +11,8 @@
       <div class="product__text">
         <h2>{{ pizza.name }}</h2>
         <ul>
-          <li>{{ pizza.size.name }}, на {{ getDough }} тесте</li>
-          <li>Соус: {{ pizza.sauce.name.toLowerCase() }}</li>
+          <li>{{ pizzaSizeName }}, на {{ pizzaDoughName }} тесте</li>
+          <li>Соус: {{ pizzaSauceName }}</li>
           <li>Начинка: {{ filledIngredients }}</li>
         </ul>
       </div>
@@ -21,7 +21,7 @@
     <base-item-counter class="cart-list__counter" v-model="counter" />
 
     <div class="cart-list__price">
-      <b>{{ getPizzaPrice }} ₽</b>
+      <b>{{ pizzaPrice }} ₽</b>
     </div>
 
     <div class="cart-list__button">
@@ -34,7 +34,7 @@
 
 <script>
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapState } from "vuex";
 import {
   UPDATE_ENTITY,
   DELETE_ENTITY,
@@ -56,24 +56,51 @@ export default {
   },
 
   computed: {
-    getDough() {
-      return this.pizza.dough.value === "big" ? "толстом" : "тонком";
+    ...mapState("Builder", {
+      builderData: "data",
+    }),
+
+    ...mapGetters(["getPizzaPrice"]),
+
+    pizzaDoughName() {
+      const { pizza, builderData } = this;
+      const { name } = builderData.doughs.find((el) => el.id === pizza.doughId);
+      return name.toLowerCase().replace(/.$/, "м");
+    },
+
+    pizzaSauceName() {
+      const { pizza, builderData } = this;
+      const { name } = builderData.sauces.find((el) => el.id === pizza.sauceId);
+      return name;
+    },
+
+    pizzaSizeName() {
+      const { pizza, builderData } = this;
+      const { name } = builderData.sizes.find((el) => el.id === pizza.sizeId);
+      return name;
     },
 
     filledIngredients() {
-      return this.pizza.ingredients
-        .filter((el) => el.count > 0)
-        .map((el) => el.name.toLowerCase())
+      const { pizza, builderData } = this;
+      return pizza.ingredients
+        .map((el) => {
+          const { name } = builderData.ingredients.find(
+            (ingredient) => ingredient.id === el.id
+          );
+          return name.toLowerCase();
+        })
         .join(", ");
     },
 
-    getPizzaPrice() {
-      return this.pizza.price * this.pizza.count;
+    pizzaPrice() {
+      const { pizza, getPizzaPrice } = this;
+      const price = getPizzaPrice(pizza);
+      return price * pizza.quantity;
     },
 
     counter: {
       get() {
-        return this.pizza.count;
+        return this.pizza.quantity;
       },
       set(val) {
         if (val === 0) {
@@ -88,7 +115,7 @@ export default {
             entity: "pizzas",
             value: {
               ...this.pizza,
-              count: val,
+              quantity: val,
             },
           });
         }

@@ -3,7 +3,7 @@
     action="#"
     method="post"
     class="layout-form"
-    @submit.prevent="createOrder"
+    @submit.prevent="submitOrder"
   >
     <main class="content cart">
       <div class="container">
@@ -33,7 +33,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
-import { RESET_CART } from "@/store/mutations-types";
+import { RESET_CART, RESET_DELIVERY } from "@/store/mutations-types";
 
 import CartEmpty from "@/modules/cart/components/CartEmpty.vue";
 import CartFooter from "@/modules/cart/components/CartFooter.vue";
@@ -66,21 +66,27 @@ export default {
     ...mapGetters("Cart", ["isCartEmpty"]),
   },
 
-  created() {
+  mounted() {
     this.query();
   },
 
   methods: {
     ...mapMutations("Cart", {
       resetCart: RESET_CART,
+      resetDelivery: RESET_DELIVERY,
     }),
+
+    ...mapActions("Cart", ["createOrder"]),
 
     ...mapActions("Cart", ["query"]),
 
-    createOrder() {
-      // Логика отправки формы и сброса корзины (пока только сброс)
-      this.resetCart();
-      this.showSuccessModal = true;
+    async submitOrder() {
+      try {
+        await this.createOrder();
+        this.showSuccessModal = true;
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };

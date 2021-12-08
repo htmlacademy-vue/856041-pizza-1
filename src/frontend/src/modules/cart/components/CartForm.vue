@@ -7,14 +7,24 @@
         <select v-model="deliveryType" class="select">
           <option value="pickup">Заберу сам</option>
           <option value="delivery">Новый адрес</option>
-          <!-- <option value="3">Дом</option> -->
+          <option
+            v-for="address in addresses"
+            :key="address.id"
+            :value="address.id"
+          >
+            {{ address.name }}
+          </option>
         </select>
       </label>
 
       <base-input
+        v-mask="'+7 ###-###-##-##'"
         class="input--big-label"
         v-model="phone"
         placeholder="+7 999-999-99-99"
+        type="tel"
+        pattern="^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$"
+        required
       >
         <span>Контактный телефон:</span>
       </base-input>
@@ -23,19 +33,19 @@
         <span class="cart-form__label">Новый адрес:</span>
 
         <div class="cart-form__input">
-          <base-input v-model="street" required>
+          <base-input v-model="street" required :disabled="isExistingAddress">
             <span>Улица*</span>
           </base-input>
         </div>
 
         <div class="cart-form__input cart-form__input--small">
-          <base-input v-model="house" required>
+          <base-input v-model="building" required :disabled="isExistingAddress">
             <span>Дом*</span>
           </base-input>
         </div>
 
         <div class="cart-form__input cart-form__input--small">
-          <base-input v-model="flat">
+          <base-input v-model="flat" :disabled="isExistingAddress">
             <span>Квартира</span>
           </base-input>
         </div>
@@ -45,8 +55,8 @@
 </template>
 
 <script>
-import { SET_DELIVERY_PARAM } from "@/store/mutations-types";
-import { mapMutations } from "vuex";
+import { SET_DELIVERY_PARAM, RESET_DELIVERY } from "@/store/mutations-types";
+import { mapMutations, mapState } from "vuex";
 import BaseInput from "@/common/components/BaseInput.vue";
 
 export default {
@@ -57,12 +67,27 @@ export default {
   },
 
   computed: {
+    ...mapState("Auth", ["addresses"]),
+
+    isExistingAddress() {
+      return this.deliveryType === "address";
+    },
+
     deliveryType: {
       get() {
         return this.$store.state.Cart.delivery.type;
       },
       set(val) {
-        this.setDeliveryParam({ param: "type", value: val });
+        if (typeof val == "number") {
+          // console.log("eto address");
+          this.setDeliveryAddress(val);
+          this.setDeliveryParam({ param: "type", value: "address" });
+        } else {
+          if (val === "delivery") {
+            this.resetDelivery();
+          }
+          this.setDeliveryParam({ param: "type", value: val });
+        }
       },
     },
 
@@ -75,12 +100,12 @@ export default {
       },
     },
 
-    house: {
+    building: {
       get() {
-        return this.$store.state.Cart.delivery.house;
+        return this.$store.state.Cart.delivery.building;
       },
       set(val) {
-        this.setDeliveryParam({ param: "house", value: val });
+        this.setDeliveryParam({ param: "building", value: val });
       },
     },
 
@@ -106,7 +131,17 @@ export default {
   methods: {
     ...mapMutations("Cart", {
       setDeliveryParam: SET_DELIVERY_PARAM,
+      resetDelivery: RESET_DELIVERY,
     }),
+
+    setDeliveryAddress(id) {
+      const address = this.addresses.find((el) => el.id === id);
+
+      this.resetDelivery();
+      for (const [key, value] of Object.entries(address)) {
+        this.setDeliveryParam({ param: key, value });
+      }
+    },
   },
 };
 </script>

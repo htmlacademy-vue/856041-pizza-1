@@ -16,8 +16,11 @@ export default {
     AppLayout,
   },
 
-  created() {
-    this.$store.dispatch("init");
+  async created() {
+    await this.$store.dispatch("init");
+    if (this.$jwt.getToken()) {
+      await this.$store.dispatch("Auth/setUser");
+    }
   },
 };
 </script>

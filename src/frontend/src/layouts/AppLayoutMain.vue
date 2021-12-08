@@ -3,9 +3,7 @@
     <app-layout-header />
     <main class="layout">
       <app-layout-sidebar />
-      <div class="layout__content">
-        <slot />
-      </div>
+      <slot />
     </main>
   </div>
 </template>
