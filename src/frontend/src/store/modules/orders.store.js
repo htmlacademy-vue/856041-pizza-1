@@ -1,6 +1,10 @@
-import { SET_ENTITY, DELETE_ENTITY } from "@/store/mutations-types";
-import { RESET_CART, ADD_ENTITY } from "@/store/mutations-types";
-// import { UPDATE_ENTITY } from "@/store/mutations-types";
+import {
+  SET_ENTITY,
+  DELETE_ENTITY,
+  RESET_CART,
+  ADD_ENTITY,
+  UPDATE_MISC,
+} from "@/store/mutations-types";
 
 export default {
   namespaced: true,
@@ -57,9 +61,9 @@ export default {
     },
 
     async repeatOrder({ commit }, order) {
-      const { orderPizzas } = order;
+      const { orderPizzas, orderMisc } = order;
 
-      commit(`Orders/${RESET_CART}`, { root: true });
+      commit(`Cart/${RESET_CART}`, null, { root: true });
 
       orderPizzas.forEach((pizza) => {
         commit(
@@ -73,25 +77,11 @@ export default {
         );
       });
 
-      // TODO: Сделать заполнение ингридиентов правильно.
-      // Убрать использование данных и каунтеров в одном месте
-      // if (orderMisc.length) {
-      //   orderMisc.forEach((el) => {
-      //     const { miscId, quantity } = el;
-      //     commit(
-      //       UPDATE_ENTITY,
-      //       {
-      //         module: "Cart",
-      //         entity: "additional",
-      //         value: {
-      //           id: miscId,
-      //           quantity,
-      //         },
-      //       },
-      //       { root: true }
-      //     );
-      //   });
-      // }
+      if (orderMisc.length) {
+        orderMisc.forEach(({ miscId, quantity }) => {
+          commit(`Cart/${UPDATE_MISC}`, { miscId, quantity }, { root: true });
+        });
+      }
     },
   },
 };
