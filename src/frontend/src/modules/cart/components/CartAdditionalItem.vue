@@ -9,7 +9,10 @@
       <base-item-counter class="additional-list__counter" v-model="counter" />
 
       <div class="additional-list__price">
-        <b>{{ item.price * item.quantity }} ₽</b>
+        <b
+          >{{ misc && misc.quantity > 0 ? `${misc.quantity}x ` : "" }}
+          {{ item.price }} ₽</b
+        >
       </div>
     </div>
   </li>
@@ -18,7 +21,7 @@
 <script>
 import BaseItemCounter from "@/common/components/BaseItemCounter.vue";
 import { mapGetters, mapMutations } from "vuex";
-import { ADD_MISC, UPDATE_MISC } from "@/store/mutations-types";
+import { UPDATE_MISC } from "@/store/mutations-types";
 
 export default {
   name: "CartAdditionalItem",
@@ -39,28 +42,25 @@ export default {
 
     counter: {
       get() {
-        const misc = this.getCartMiscById(this.item.id);
+        const { misc } = this;
         return misc?.quantity ?? 0;
       },
       set(val) {
-        const misc = this.getCartMiscById(this.item.id);
-        if (misc?.quantity > 0) {
-          this.updateMisc({
-            ...misc,
-            quantity: val,
-          });
-        } else {
-          const { id: miscId } = this.item;
-          this.addMisc(miscId);
-        }
+        this.updateMisc({
+          miscId: this.item.id,
+          quantity: val,
+        });
       },
+    },
+
+    misc() {
+      return this.getCartMiscById(this.item.id);
     },
   },
 
   methods: {
     ...mapMutations("Cart", {
       updateMisc: UPDATE_MISC,
-      addMisc: ADD_MISC,
     }),
   },
 };

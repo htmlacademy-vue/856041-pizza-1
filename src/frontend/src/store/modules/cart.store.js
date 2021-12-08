@@ -3,7 +3,6 @@ import {
   ADD_ENTITY,
   RESET_CART,
   RESET_DELIVERY,
-  ADD_MISC,
   UPDATE_MISC,
 } from "@/store/mutations-types";
 
@@ -93,7 +92,7 @@ export default {
 
     [RESET_CART](state) {
       state.pizzas = [];
-      state.additional = state.additional.map((el) => ({ ...el, quantity: 0 }));
+      state.misc = [];
     },
 
     [RESET_DELIVERY](state) {
@@ -106,15 +105,13 @@ export default {
       };
     },
 
-    [ADD_MISC](state, miscId) {
-      state.misc.push({ miscId, quantity: 1 });
-    },
-
     [UPDATE_MISC](state, misc) {
       const { miscId } = misc;
       const index = state.misc.findIndex(({ miscId: id }) => id === miscId);
       if (~index) {
         state.misc.splice(index, 1, misc);
+      } else {
+        state.misc.push(misc);
       }
     },
   },
@@ -148,7 +145,7 @@ export default {
         phone: state.delivery.phone,
         address: getters.formattedAddress,
         pizzas: getters.formattedPizzas,
-        misc: state.misc,
+        misc: state.misc.filter((el) => el.quantity > 0),
       };
 
       await this.$api.orders.post(order);
